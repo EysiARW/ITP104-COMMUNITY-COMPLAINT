@@ -8,7 +8,7 @@
     @csrf
     <div class="grid-2">
         <div class="field">
-            <label for="report_type_id">Type of report</label>
+            <label for="report_type_id">Type of report <span class="req">*</span></label>
             <select id="report_type_id" name="report_type_id" required>
                 <option value="">Select type</option>
                 @foreach ($types as $t)
@@ -18,7 +18,7 @@
             @error('report_type_id')<span class="field-error">{{ $message }}</span>@enderror
         </div>
         <div class="field">
-            <label for="category_id">Category</label>
+            <label for="category_id">Category <span class="req">*</span></label>
             <select id="category_id" name="category_id" required>
                 <option value="">Select category</option>
                 @foreach ($categories as $c)
@@ -28,17 +28,17 @@
             @error('category_id')<span class="field-error">{{ $message }}</span>@enderror
         </div>
         <div class="field span-2">
-            <label for="title">Short title</label>
+            <label for="title">Short title <span class="req">*</span></label>
             <input id="title" type="text" name="title" value="{{ old('title') }}" maxlength="150" placeholder="e.g. Loud karaoke past midnight" required>
             @error('title')<span class="field-error">{{ $message }}</span>@enderror
         </div>
         <div class="field span-2">
-            <label for="description">What happened?</label>
+            <label for="description">What happened? <span class="req">*</span></label>
             <textarea id="description" name="description" maxlength="5000" required placeholder="Describe the incident or concern: who, what, when, and how it affects you.">{{ old('description') }}</textarea>
             @error('description')<span class="field-error">{{ $message }}</span>@enderror
         </div>
         <div class="field">
-            <label for="area_id">Purok / Area where it happened</label>
+            <label for="area_id">Purok / Area where it happened <span class="req">*</span></label>
             <select id="area_id" name="area_id" required>
                 <option value="">Select area</option>
                 @foreach ($areas as $a)
@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px">
+    <div class="form-actions">
         <a class="btn btn-outline" href="{{ route('dashboard') }}">Cancel</a>
         <button type="submit" class="btn btn-primary"
                 data-confirm="Please check your details first. You will not be able to edit the report after submitting."

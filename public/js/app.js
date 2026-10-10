@@ -194,10 +194,31 @@ document.addEventListener('DOMContentLoaded', () => {
       okBtn.focus();
     }));
     $('[data-modal-cancel]', modal).addEventListener('click', close);
-    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     okBtn.addEventListener('click', () => { if (pendingForm) { okBtn.disabled = true; pendingForm.submit(); } });
   }
+
+  /* Universal modal dismiss (Escape key and backdrop click) for all modals */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      $$('.modal.show').forEach((m) => {
+        m.classList.remove('show');
+        if (m.id === 'doc-preview-modal') {
+          const c = $('#doc-preview-container');
+          if (c) c.innerHTML = '';
+        }
+      });
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.classList && e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+      e.target.classList.remove('show');
+      if (e.target.id === 'doc-preview-modal') {
+        const c = $('#doc-preview-container');
+        if (c) c.innerHTML = '';
+      }
+    }
+  });
 
   /* File upload widget (reusable: <x-file-upload name="evidence" />) */
   $$('[data-file-upload]').forEach((w) => {

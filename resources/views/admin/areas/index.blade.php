@@ -159,7 +159,7 @@
         <form method="POST" action="{{ route('admin.departments.store') }}">
             @csrf
             <div class="field">
-                <label for="dept_name">Department Name *</label>
+                <label for="dept_name">Department Name <span class="req">*</span></label>
                 <input type="text" name="department_name" id="dept_name" required placeholder="e.g. Lupon Tagapamayapa">
             </div>
             <div class="field">
@@ -182,7 +182,7 @@
             @csrf
             @method('PUT')
             <div class="field">
-                <label for="edit_dept_name">Department Name *</label>
+                <label for="edit_dept_name">Department Name <span class="req">*</span></label>
                 <input type="text" name="department_name" id="edit_dept_name" required>
             </div>
             <div class="field">
@@ -211,7 +211,7 @@
         <form method="POST" action="{{ route('admin.areas.store') }}">
             @csrf
             <div class="field">
-                <label for="area_name">Area / Purok Name *</label>
+                <label for="area_name">Area / Purok Name <span class="req">*</span></label>
                 <input type="text" name="area_name" id="area_name" required placeholder="e.g. Purok 6">
             </div>
             <div class="field">
@@ -234,7 +234,7 @@
             @csrf
             @method('PUT')
             <div class="field">
-                <label for="edit_area_name">Area / Purok Name *</label>
+                <label for="edit_area_name">Area / Purok Name <span class="req">*</span></label>
                 <input type="text" name="area_name" id="edit_area_name" required>
             </div>
             <div class="field">
@@ -259,7 +259,7 @@
 @foreach ($departments as $d)
 <div class="modal" id="roster-modal-{{ $d->department_id }}">
     <div class="modal-box" style="max-width: 640px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom: 14px;">
             <div>
                 <h3 style="margin:0; font-size:18px;">{{ $d->department_name }}</h3>
                 <div class="muted" style="font-size:12.5px;">Committee Personnel &amp; Officer Roster</div>
@@ -273,7 +273,7 @@
                 <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm" style="margin-top: 8px;">Assign Personnel</a>
             </div>
         @else
-            <div class="table-wrap" style="max-height: 320px; overflow-y: auto;">
+            <div class="table-wrap" style="max-height: min(320px, 48vh); overflow-y: auto; -webkit-overflow-scrolling: touch;">
                 <table>
                     <thead>
                         <tr>

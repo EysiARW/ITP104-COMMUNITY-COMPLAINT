@@ -33,6 +33,10 @@ img{max-width:100%;display:block}
 /* ===== Forms ===== */
 .field{margin-bottom:16px}
 .field label,.label{display:block;font-weight:500;font-size:14px;margin-bottom:6px}
+.req{color:var(--bad);font-weight:700;margin-left:2px}
+.glass .req{color:#ff5252}
+html.dark .req{color:#f87171}
+html.dark .glass .req{color:#ff6b6b}
 .field .hint{font-size:12.5px;color:var(--muted);margin-top:4px}
 input[type=text],input[type=email],input[type=password],input[type=tel],input[type=search],input[type=datetime-local],select,textarea{
   width:100%;padding:11px 13px;border:1px solid #cdd3ea;border-radius:10px;background:#fff;color:var(--ink);font:400 15px 'Roboto',sans-serif;scroll-margin-top:75px;scroll-margin-bottom:75px}
@@ -48,6 +52,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);bo
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px}
 .pw{position:relative}.pw input{padding-right:64px}
 .pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--blue);font:500 13px 'Roboto';cursor:pointer;padding:8px}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap;margin-top:24px}
 
 /* ===== Alerts / badges ===== */
 .alert{padding:12px 16px;border-radius:10px;margin-bottom:16px;font-size:14.5px;border:1px solid transparent;transition:opacity .4s}
@@ -233,7 +238,7 @@ html.dark .public-bg.has-bg-image::after{
 .track-box{max-width:620px;margin:0 auto 24px;padding:26px}
 .track-form{display:flex;gap:10px}.track-form input{flex:1}
 .track-result{max-width:760px;margin:0 auto;color:var(--ink);background:#fff;border-radius:var(--radius);padding:24px}
-.track-result h3{font-size:24px;margin-bottom:12px}
+.track-result h3{font-size:24px;margin-bottom:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;word-break:break-word}
 .page-title{text-align:center;padding:10px 6% 24px}.page-title h1{font-size:clamp(32px,5vw,52px)}
 .prose{max-width:760px;margin:0 auto;padding:10px 6% 70px}.prose h2{font-size:26px;margin:26px 0 8px}.prose p,.prose li{opacity:.93}
 
@@ -676,6 +681,8 @@ html.dark body.has-hall-bg:not(.public) .stat{
   .pub-footer .footer-nav{gap:6px 10px}
   .pub-footer a{font-size:12px}
   .pub-footer p{font-size:11px}
+  .form-actions{flex-direction:column-reverse;align-items:stretch;gap:8px}
+  .form-actions .btn{width:100%}
 }
 
 @media(max-width:340px){
@@ -761,9 +768,13 @@ html.dark .btn-outline:hover{background:rgba(255,255,255,.07)}
 html.dark .btn-light{background:rgba(255,255,255,.14);color:#fff}
 html.dark .btn-light:hover{background:rgba(255,255,255,.24)}
 html.dark input[type=text],html.dark input[type=email],html.dark input[type=password],
-html.dark input[type=tel],html.dark input[type=search],html.dark input[type=datetime-local],
+html.dark input[type=tel],html.dark input[type=search],html.dark input[type=date],html.dark input[type=datetime-local],
 html.dark select,html.dark textarea{
   background:#172044;color:var(--ink);border-color:var(--line);
+}
+html.dark input[type=date]::-webkit-calendar-picker-indicator,
+html.dark input[type=datetime-local]::-webkit-calendar-picker-indicator{
+  filter:invert(0.85);
 }
 html.dark input:focus,html.dark select:focus,html.dark textarea:focus{
   border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,107,255,.25);background:#19234b;
@@ -783,6 +794,8 @@ html.dark .attach{background:var(--card);border-color:var(--line);color:var(--in
 html.dark .step .dot{background:var(--card);border-color:var(--line);color:var(--muted)}
 html.dark .step.current .dot{background:var(--card);border-color:var(--blue);color:var(--blue)}
 html.dark .step.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+html.dark .step.rejected .dot{background:var(--bad);border-color:var(--bad);color:#fff}
+html.dark .step.rejected{color:var(--bad)}
 html.dark .track-result{background:var(--card);color:var(--ink);border:1px solid var(--line)}
 html.dark .side-nav a.active{background:var(--blue);color:#fff}
 html.dark .side-nav a.active .nav-icon{color:#fff}

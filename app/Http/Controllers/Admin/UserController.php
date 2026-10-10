@@ -66,39 +66,36 @@ class UserController extends Controller
         return view('admin.users.pending', compact('pendingUsers', 'pendingCount'));
     }
 
-    public function document(User $user)
+    public function document(\Illuminate\Http\Request $request, User $user)
     {
         abort_unless($user->verification_doc_path, 404);
 
         $path = $user->verification_doc_path;
-        $disk = null;
+        $resolved = \App\Http\Controllers\AttachmentController::resolveFilePath($path);
 
-        if (\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
-            $disk = \Illuminate\Support\Facades\Storage::disk('local');
-        } elseif (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
-            $disk = \Illuminate\Support\Facades\Storage::disk('public');
-        } elseif (\Illuminate\Support\Facades\Storage::exists($path)) {
-            $disk = \Illuminate\Support\Facades\Storage::disk(config('filesystems.default', 'local'));
-        }
-
-        if ($disk) {
-            return $disk->response(
-                $path,
-                $user->verification_doc_name ?? 'verification_document',
-                ['Content-Disposition' => 'inline']
-            );
-        }
-
-        $directPaths = [
-            storage_path('app/' . $path),
-            storage_path('app/private/' . $path),
-            storage_path('app/public/' . $path),
-        ];
-
-        foreach ($directPaths as $dp) {
-            if (file_exists($dp) && is_file($dp)) {
-                return response()->file($dp, ['Content-Disposition' => 'inline']);
+        if ($resolved) {
+            if (isset($resolved['disk']) && isset($resolved['relative'])) {
+                try {
+                    return $resolved['disk']->response(
+                        $resolved['relative'],
+                        $user->verification_doc_name ?? 'verification_document',
+                        ['Content-Disposition' => 'inline']
+                    );
+                } catch (\Throwable) {
+                }
             }
+
+            if (isset($resolved['full_path']) && file_exists($resolved['full_path'])) {
+                $mime = mime_content_type($resolved['full_path']) ?: 'application/octet-stream';
+                return response()->file($resolved['full_path'], [
+                    'Content-Type' => $mime,
+                    'Content-Disposition' => 'inline; filename="' . addslashes($user->verification_doc_name ?? 'verification_document') . '"',
+                ]);
+            }
+        }
+
+        if ($request->header('Sec-Fetch-Dest') === 'image' || str_contains($request->header('Accept', ''), 'image/')) {
+            return \App\Http\Controllers\AttachmentController::placeholderSvg($user->verification_doc_name ?? 'verification_document');
         }
 
         abort(404, 'Verification document not found on server.');

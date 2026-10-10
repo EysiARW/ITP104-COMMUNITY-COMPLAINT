@@ -98,7 +98,7 @@ class ComplaintController extends Controller
                     'file_name' => $file->getClientOriginalName(),
                     'file_type' => $file->getMimeType(),
                     'file_size' => $file->getSize(),
-                    'file_path' => $file->store('complaints/' . $complaint->complaint_id),
+                    'file_path' => $file->store('complaints/' . $complaint->complaint_id, 'local'),
                 ]);
             }
 

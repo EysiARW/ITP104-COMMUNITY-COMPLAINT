@@ -146,7 +146,7 @@
         <form method="POST" id="reject-form">
             @csrf
             <div class="field">
-                <label for="rejection_reason">Reason for Rejection *</label>
+                <label for="rejection_reason">Reason for Rejection <span class="req">*</span></label>
                 <textarea name="rejection_reason" id="rejection_reason" rows="3" required placeholder="e.g. Blurry ID, Address not within Barangay Banlic, Expired document..."></textarea>
             </div>
             <div class="modal-actions">

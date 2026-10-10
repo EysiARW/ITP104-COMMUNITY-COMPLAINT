@@ -11,12 +11,12 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="field">
-                <label for="email">Email address</label>
+                <label for="email">Email address <span class="req">*</span></label>
                 <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email">
                 @error('email')<span class="field-error">{{ $message }}</span>@enderror
             </div>
             <div class="field">
-                <label for="password">Password</label>
+                <label for="password">Password <span class="req">*</span></label>
                 <div class="pw">
                     <input id="password" type="password" name="password" required autocomplete="current-password">
                     <button type="button" data-toggle-password>Show</button>

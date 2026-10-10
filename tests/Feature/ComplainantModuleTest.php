@@ -243,4 +243,177 @@ class ComplainantModuleTest extends TestCase
         $notification->refresh();
         $this->assertTrue($notification->is_read);
     }
+
+    public function test_attachment_serving_when_file_exists(): void
+    {
+        Storage::fake('local');
+        $resident = User::create([
+            'role_id' => User::ROLE_COMPLAINANT,
+            'first_name' => 'Sara',
+            'last_name' => 'Duterte',
+            'email' => 'sara@example.local',
+            'password_hash' => Hash::make('Secret123!'),
+            'verification_status' => User::STATUS_APPROVED,
+            'is_active' => true,
+        ]);
+
+        $complaint = Complaint::create([
+            'reference_no' => 'BRGY-2026-99001',
+            'complainant_id' => $resident->user_id,
+            'report_type_id' => 1,
+            'category_id' => 1,
+            'priority_id' => 2,
+            'area_id' => 1,
+            'status_id' => 1,
+            'title' => 'Evidence test',
+            'description' => 'Test complaint with uploaded evidence file.',
+        ]);
+
+        $file = UploadedFile::fake()->create('proof.png', 120, 'image/png');
+        $path = $file->store('complaints/' . $complaint->complaint_id, 'local');
+
+        $attachment = \App\Models\Attachment::create([
+            'complaint_id' => $complaint->complaint_id,
+            'uploaded_by' => $resident->user_id,
+            'file_name' => 'proof.png',
+            'file_type' => 'image/png',
+            'file_size' => 120,
+            'file_path' => $path,
+        ]);
+
+        $response = $this->actingAs($resident)->get("/attachments/{$attachment->attachment_id}");
+        $response->assertStatus(200);
+        $this->assertStringContainsString('inline', (string) $response->headers->get('Content-Disposition'));
+    }
+
+    public function test_attachment_renders_helpful_view_when_file_missing_on_server(): void
+    {
+        $resident = User::create([
+            'role_id' => User::ROLE_COMPLAINANT,
+            'first_name' => 'Isko',
+            'last_name' => 'Moreno',
+            'email' => 'isko@example.local',
+            'password_hash' => Hash::make('Secret123!'),
+            'verification_status' => User::STATUS_APPROVED,
+            'is_active' => true,
+        ]);
+
+        $complaint = Complaint::create([
+            'reference_no' => 'BRGY-2026-99002',
+            'complainant_id' => $resident->user_id,
+            'report_type_id' => 1,
+            'category_id' => 1,
+            'priority_id' => 2,
+            'area_id' => 1,
+            'status_id' => 1,
+            'title' => 'Missing evidence test',
+            'description' => 'Test complaint where evidence was wiped after container restart.',
+        ]);
+
+        $attachment = \App\Models\Attachment::create([
+            'complaint_id' => $complaint->complaint_id,
+            'uploaded_by' => $resident->user_id,
+            'file_name' => 'erased_photo.png',
+            'file_type' => 'image/png',
+            'file_size' => 204800,
+            'file_path' => 'complaints/99002/non_existent_file.png',
+        ]);
+
+        $response = $this->actingAs($resident)->get("/attachments/{$attachment->attachment_id}");
+        $response->assertStatus(404);
+        $response->assertSee('Evidence File Not Found on Storage Disk');
+        $response->assertSee('erased_photo.png');
+        $response->assertSee('Railway');
+        $response->assertSee('BRGY-2026-99002');
+    }
+
+    public function test_attachment_returns_svg_placeholder_for_image_assets_when_missing(): void
+    {
+        $resident = User::create([
+            'role_id' => User::ROLE_COMPLAINANT,
+            'first_name' => 'Vico',
+            'last_name' => 'Sotto',
+            'email' => 'vico@example.local',
+            'password_hash' => Hash::make('Secret123!'),
+            'verification_status' => User::STATUS_APPROVED,
+            'is_active' => true,
+        ]);
+
+        $complaint = Complaint::create([
+            'reference_no' => 'BRGY-2026-99003',
+            'complainant_id' => $resident->user_id,
+            'report_type_id' => 1,
+            'category_id' => 1,
+            'priority_id' => 2,
+            'area_id' => 1,
+            'status_id' => 1,
+            'title' => 'Missing image thumb test',
+            'description' => 'Test complaint where image thumb is requested.',
+        ]);
+
+        $attachment = \App\Models\Attachment::create([
+            'complaint_id' => $complaint->complaint_id,
+            'uploaded_by' => $resident->user_id,
+            'file_name' => 'damaged_gate.jpg',
+            'file_type' => 'image/jpeg',
+            'file_size' => 50000,
+            'file_path' => 'complaints/99003/not_on_disk.jpg',
+        ]);
+
+        $response = $this->actingAs($resident)->withHeaders([
+            'Sec-Fetch-Dest' => 'image',
+            'Accept' => 'image/webp,image/png,image/*;q=0.8',
+        ])->get("/attachments/{$attachment->attachment_id}");
+
+        $response->assertStatus(200);
+        $this->assertEquals('image/svg+xml', $response->headers->get('Content-Type'));
+        $this->assertStringContainsString('File unavailable on server', $response->getContent());
+    }
+
+    public function test_unauthorized_user_cannot_access_other_users_evidence(): void
+    {
+        $owner = User::create([
+            'role_id' => User::ROLE_COMPLAINANT,
+            'first_name' => 'Manny',
+            'last_name' => 'Pacquiao',
+            'email' => 'manny@example.local',
+            'password_hash' => Hash::make('Secret123!'),
+            'verification_status' => User::STATUS_APPROVED,
+            'is_active' => true,
+        ]);
+
+        $stranger = User::create([
+            'role_id' => User::ROLE_COMPLAINANT,
+            'first_name' => 'Juan',
+            'last_name' => 'Marquez',
+            'email' => 'marquez@example.local',
+            'password_hash' => Hash::make('Secret123!'),
+            'verification_status' => User::STATUS_APPROVED,
+            'is_active' => true,
+        ]);
+
+        $complaint = Complaint::create([
+            'reference_no' => 'BRGY-2026-99004',
+            'complainant_id' => $owner->user_id,
+            'report_type_id' => 1,
+            'category_id' => 1,
+            'priority_id' => 2,
+            'area_id' => 1,
+            'status_id' => 1,
+            'title' => 'Private evidence test',
+            'description' => 'Owner only complaint.',
+        ]);
+
+        $attachment = \App\Models\Attachment::create([
+            'complaint_id' => $complaint->complaint_id,
+            'uploaded_by' => $owner->user_id,
+            'file_name' => 'private_cctv.png',
+            'file_type' => 'image/png',
+            'file_size' => 1000,
+            'file_path' => 'complaints/99004/cctv.png',
+        ]);
+
+        $response = $this->actingAs($stranger)->get("/attachments/{$attachment->attachment_id}");
+        $response->assertStatus(403);
+    }
 }

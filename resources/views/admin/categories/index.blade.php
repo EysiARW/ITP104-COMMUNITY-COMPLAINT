@@ -85,7 +85,7 @@
         <form method="POST" action="{{ route('admin.categories.store') }}">
             @csrf
             <div class="field">
-                <label for="cat_name">Category Name *</label>
+                <label for="cat_name">Category Name <span class="req">*</span></label>
                 <input type="text" name="category_name" id="cat_name" required placeholder="e.g. Stray Animals, Sanitation">
             </div>
             <div class="field">
@@ -117,7 +117,7 @@
             @csrf
             @method('PUT')
             <div class="field">
-                <label for="edit_cat_name">Category Name *</label>
+                <label for="edit_cat_name">Category Name <span class="req">*</span></label>
                 <input type="text" name="category_name" id="edit_cat_name" required>
             </div>
             <div class="field">

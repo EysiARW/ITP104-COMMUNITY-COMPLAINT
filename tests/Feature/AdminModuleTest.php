@@ -636,4 +636,48 @@ class AdminModuleTest extends TestCase
         $this->assertFalse($area->is_active);
         $this->assertDatabaseHas('areas', ['area_id' => $area->area_id]);
     }
+
+    public function test_assigning_complaint_to_non_admin_or_inactive_user_fails_validation(): void
+    {
+        $resident = User::firstOrCreate(
+            ['email' => 'resident_assign_test@example.local'],
+            [
+                'role_id' => User::ROLE_COMPLAINANT,
+                'first_name' => 'Test',
+                'last_name' => 'Resident',
+                'password_hash' => bcrypt('secret'),
+                'is_active' => true,
+            ]
+        );
+
+        $complaint = Complaint::create([
+            'reference_no' => 'BRGY-2026-99991',
+            'complainant_id' => $resident->user_id,
+            'report_type_id' => 1,
+            'category_id' => 1,
+            'priority_id' => 2,
+            'area_id' => 1,
+            'status_id' => 1,
+            'title' => 'Test Complaint Assignment Security',
+            'description' => 'Verifying officer assignment constraints.',
+        ]);
+
+        $inactiveAdmin = User::factory()->create([
+            'role_id' => User::ROLE_ADMIN,
+            'is_active' => false,
+        ]);
+
+        // Attempt assigning to resident
+        $respResident = $this->actingAs($this->admin)->post("/admin/complaints/{$complaint->reference_no}/assign", [
+            'assigned_to' => $resident->user_id,
+        ]);
+        $respResident->assertSessionHasErrors('assigned_to');
+
+        // Attempt assigning to inactive admin
+        $respInactive = $this->actingAs($this->admin)->post("/admin/complaints/{$complaint->reference_no}/assign", [
+            'assigned_to' => $inactiveAdmin->user_id,
+        ]);
+        $respInactive->assertSessionHasErrors('assigned_to');
+    }
 }
+

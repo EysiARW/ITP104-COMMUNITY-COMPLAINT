@@ -13,7 +13,7 @@
 
         <div class="grid-2">
             <div class="field">
-                <label for="role_id">System Role *</label>
+                <label for="role_id">System Role <span class="req">*</span></label>
                 <select name="role_id" id="role_id" required>
                     @foreach ($roles as $r)
                         <option value="{{ $r->role_id }}" @selected(old('role_id') == $r->role_id)>{{ ucfirst($r->role_name) }}</option>
@@ -23,7 +23,7 @@
             </div>
 
             <div class="field">
-                <label for="email">Email Address *</label>
+                <label for="email">Email Address <span class="req">*</span></label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required>
                 @error('email')<span class="field-error">{{ $message }}</span>@enderror
             </div>
@@ -31,7 +31,7 @@
 
         <div class="grid-3">
             <div class="field">
-                <label for="first_name">First Name *</label>
+                <label for="first_name">First Name <span class="req">*</span></label>
                 <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}" required>
                 @error('first_name')<span class="field-error">{{ $message }}</span>@enderror
             </div>
@@ -43,7 +43,7 @@
             </div>
 
             <div class="field">
-                <label for="last_name">Last Name *</label>
+                <label for="last_name">Last Name <span class="req">*</span></label>
                 <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}" required>
                 @error('last_name')<span class="field-error">{{ $message }}</span>@enderror
             </div>
@@ -57,7 +57,7 @@
             </div>
 
             <div class="field">
-                <label for="password">Initial Password *</label>
+                <label for="password">Initial Password <span class="req">*</span></label>
                 <input type="password" name="password" id="password" required minlength="8" placeholder="At least 8 characters">
                 @error('password')<span class="field-error">{{ $message }}</span>@enderror
             </div>
@@ -106,9 +106,9 @@
             </label>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 24px;">
-            <button class="btn btn-primary" type="submit">Create Account</button>
+        <div class="form-actions">
             <a class="btn btn-outline" href="{{ route('admin.users.index') }}">Cancel</a>
+            <button class="btn btn-primary" type="submit">Create Account</button>
         </div>
     </form>
 </div>

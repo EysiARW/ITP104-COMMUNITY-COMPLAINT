@@ -5,7 +5,7 @@
     <title>@yield('title', 'Home') | Brgy. Banlic CCIRS</title>
 </head>
 @php
-    $isAuthCleanPage = request()->routeIs('login', 'register');
+    $isAuthCleanPage = request()->routeIs('login', 'register', 'password.*');
 @endphp
 <body class="public {{ $isAuthCleanPage ? 'auth-clean-bg' : 'has-hall-bg' }}">
 <div class="public-bg {{ $isAuthCleanPage ? 'no-bg-image' : 'has-bg-image' }}">

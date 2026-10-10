@@ -153,7 +153,7 @@
                         <div class="muted" style="font-size: 11.5px; margin-bottom: 6px; font-weight: 600;">Quick Pick Committee Member:</div>
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                             @foreach ($recOfficers as $ro)
-                                <button type="button" class="btn btn-outline btn-sm" style="font-size: 12px; padding: 3px 10px; border-radius: 9999px;"
+                                <button type="button" class="btn btn-outline btn-sm" style="font-size: 12px; padding: 3px 10px; border-radius: 9999px; white-space: normal; text-align: left; max-width: 100%;"
                                         onclick="document.getElementById('assigned_to').value = '{{ $ro->user_id }}'">
                                     {{ $ro->full_name }} <span class="muted">({{ $ro->committee_position ?: 'Member' }})</span>
                                 </button>
@@ -166,7 +166,7 @@
             <form method="POST" action="{{ route('admin.complaints.assign', $complaint) }}">
                 @csrf
                 <div class="field">
-                    <label for="assigned_to">Assign Officer / Investigator *</label>
+                    <label for="assigned_to">Assign Officer / Investigator <span class="req">*</span></label>
                     <select name="assigned_to" id="assigned_to" required>
                         <option value="">Select staff member</option>
                         
@@ -232,7 +232,7 @@
                 @method('PUT')
 
                 <div class="field">
-                    <label for="status_id">Complaint Status *</label>
+                    <label for="status_id">Complaint Status <span class="req">*</span></label>
                     <select name="status_id" id="status_id" required>
                         @foreach ($statuses as $st)
                             <option value="{{ $st->status_id }}" @selected(old('status_id', $complaint->status_id) == $st->status_id)>
@@ -243,7 +243,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="priority_id">Priority Level *</label>
+                    <label for="priority_id">Priority Level <span class="req">*</span></label>
                     <select name="priority_id" id="priority_id" required>
                         @foreach ($priorities as $pr)
                             <option value="{{ $pr->priority_id }}" @selected(old('priority_id', $complaint->priority_id) == $pr->priority_id)>

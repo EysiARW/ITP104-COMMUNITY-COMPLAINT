@@ -16,6 +16,7 @@ use App\Models\UserNotification;
 use App\Support\Audit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ComplaintController extends Controller
 {
@@ -164,8 +165,13 @@ class ComplaintController extends Controller
     public function assign(Request $request, Complaint $complaint)
     {
         $validated = $request->validate([
-            'assigned_to' => ['required', 'exists:users,user_id'],
+            'assigned_to' => [
+                'required',
+                Rule::exists('users', 'user_id')->where(fn ($q) => $q->where('role_id', User::ROLE_ADMIN)->where('is_active', true)),
+            ],
             'remarks' => ['nullable', 'string', 'max:500'],
+        ], [
+            'assigned_to.exists' => 'The selected officer must be an active administrator/staff member.',
         ]);
 
         $officer = User::with('department')->findOrFail($validated['assigned_to']);

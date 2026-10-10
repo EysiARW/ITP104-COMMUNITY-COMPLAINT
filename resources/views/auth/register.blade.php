@@ -11,7 +11,7 @@
             @csrf
             <div class="grid-3">
                 <div class="field">
-                    <label for="first_name">First name</label>
+                    <label for="first_name">First name <span class="req">*</span></label>
                     <input id="first_name" type="text" name="first_name" value="{{ old('first_name') }}" required autocomplete="given-name">
                     @error('first_name')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
@@ -21,24 +21,24 @@
                     @error('middle_name')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
                 <div class="field">
-                    <label for="last_name">Last name</label>
+                    <label for="last_name">Last name <span class="req">*</span></label>
                     <input id="last_name" type="text" name="last_name" value="{{ old('last_name') }}" required autocomplete="family-name">
                     @error('last_name')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
             </div>
             <div class="grid-2">
                 <div class="field">
-                    <label for="email">Email address</label>
+                    <label for="email">Email address <span class="req">*</span></label>
                     <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email">
                     @error('email')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
                 <div class="field">
-                    <label for="contact_number">Mobile number</label>
+                    <label for="contact_number">Mobile number <span class="req">*</span></label>
                     <input id="contact_number" type="tel" name="contact_number" value="{{ old('contact_number') }}" placeholder="09171234567" required autocomplete="tel">
                     @error('contact_number')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
                 <div class="field">
-                    <label for="area_id">Purok / Area</label>
+                    <label for="area_id">Purok / Area <span class="req">*</span></label>
                     <select id="area_id" name="area_id" required>
                         <option value="">Select your area</option>
                         @foreach ($areas as $area)
@@ -48,12 +48,12 @@
                     @error('area_id')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
                 <div class="field">
-                    <label for="address">Street / House no.</label>
+                    <label for="address">Street / House no. <span class="req">*</span></label>
                     <input id="address" type="text" name="address" value="{{ old('address') }}" required autocomplete="street-address">
                     @error('address')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
                 <div class="field">
-                    <label for="password">Password</label>
+                    <label for="password">Password <span class="req">*</span></label>
                     <div class="pw">
                         <input id="password" type="password" name="password" required minlength="8" autocomplete="new-password">
                         <button type="button" data-toggle-password>Show</button>
@@ -62,7 +62,7 @@
                     @error('password')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
                 <div class="field">
-                    <label for="password_confirmation">Confirm password</label>
+                    <label for="password_confirmation">Confirm password <span class="req">*</span></label>
                     <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
                 </div>
             </div>
@@ -76,7 +76,7 @@
 
                 <div class="grid-2">
                     <div class="field">
-                        <label for="verification_doc_type">Document Type *</label>
+                        <label for="verification_doc_type">Document Type <span class="req">*</span></label>
                         <select id="verification_doc_type" name="verification_doc_type" required>
                             <option value="">Select document type</option>
                             <option value="voters_cert" @selected(old('verification_doc_type') === 'voters_cert')>Voter's Certification</option>
@@ -87,7 +87,7 @@
                     </div>
 
                     <div class="field">
-                        <label for="verification_doc">Upload Document or Take Photo *</label>
+                        <label for="verification_doc">Upload Document or Take Photo <span class="req">*</span></label>
                         <input id="verification_doc" type="file" name="verification_doc" accept=".jpg,.jpeg,.png,.pdf,image/*" capture="environment" required style="padding: 8px;">
                         <div class="hint">Accepted: JPG, PNG, PDF (Max 5MB). Mobile devices can snap photo directly.</div>
                         @error('verification_doc')<span class="field-error">{{ $message }}</span>@enderror
@@ -98,7 +98,7 @@
             <div class="field">
                 <label class="check">
                     <input type="checkbox" name="privacy" value="1" @checked(old('privacy')) required>
-                    <span>I agree to the collection and use of my information as described in the <a href="{{ route('privacy') }}" target="_blank">Privacy Policy</a>.</span>
+                    <span>I agree to the collection and use of my information as described in the <a href="{{ route('privacy') }}" target="_blank">Privacy Policy</a> <span class="req">*</span>.</span>
                 </label>
                 @error('privacy')<span class="field-error">{{ $message }}</span>@enderror
             </div>
