@@ -69,12 +69,39 @@ class UserController extends Controller
     public function document(User $user)
     {
         abort_unless($user->verification_doc_path, 404);
-        abort_unless(\Illuminate\Support\Facades\Storage::exists($user->verification_doc_path), 404);
 
-        return \Illuminate\Support\Facades\Storage::response(
-            $user->verification_doc_path,
-            $user->verification_doc_name ?? 'verification_document'
-        );
+        $path = $user->verification_doc_path;
+        $disk = null;
+
+        if (\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+            $disk = \Illuminate\Support\Facades\Storage::disk('local');
+        } elseif (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        } elseif (\Illuminate\Support\Facades\Storage::exists($path)) {
+            $disk = \Illuminate\Support\Facades\Storage::disk(config('filesystems.default', 'local'));
+        }
+
+        if ($disk) {
+            return $disk->response(
+                $path,
+                $user->verification_doc_name ?? 'verification_document',
+                ['Content-Disposition' => 'inline']
+            );
+        }
+
+        $directPaths = [
+            storage_path('app/' . $path),
+            storage_path('app/private/' . $path),
+            storage_path('app/public/' . $path),
+        ];
+
+        foreach ($directPaths as $dp) {
+            if (file_exists($dp) && is_file($dp)) {
+                return response()->file($dp, ['Content-Disposition' => 'inline']);
+            }
+        }
+
+        abort(404, 'Verification document not found on server.');
     }
 
     public function approve(User $user)

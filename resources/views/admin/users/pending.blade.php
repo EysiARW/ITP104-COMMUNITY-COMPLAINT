@@ -188,6 +188,9 @@ function openDocPreviewModal(url, fullName, docType, fileName, isPdf) {
         img.style.objectFit = "contain";
         img.style.borderRadius = "8px";
         img.style.boxShadow = "0 4px 16px rgba(0,0,0,0.1)";
+        img.onerror = function() {
+            container.innerHTML = '<div style="text-align: center; padding: 28px 16px; color: var(--muted);"><p style="font-weight: 600; color: var(--bad); margin-bottom: 6px;">Document file unavailable</p><p style="font-size: 13px; max-width: 440px; margin: 0 auto;">The uploaded file was stored in a previous deployment container and is not present in persistent storage. You can still approve or reject based on resident details.</p></div>';
+        };
         container.appendChild(img);
     }
 
