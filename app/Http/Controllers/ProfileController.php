@@ -28,9 +28,12 @@ class ProfileController extends Controller
             'last_name' => ['required', 'string', 'max:60'],
             'email' => ['required', 'email', 'max:120', Rule::unique('users', 'email')->ignore($user->user_id, 'user_id')],
             'contact_number' => ['required', 'regex:/^(09|\+639)\d{9}$/'],
-            'area_id' => ['nullable', 'exists:areas,area_id'],
+            'area_id' => ['nullable', Rule::exists('areas', 'area_id')->where('is_active', true)],
             'address' => ['nullable', 'string', 'max:255'],
-        ], ['contact_number.regex' => 'Use a valid Philippine mobile number, e.g. 09171234567.']);
+        ], [
+            'area_id.exists' => 'Please select a valid, active purok/area.',
+            'contact_number.regex' => 'Use a valid Philippine mobile number, e.g. 09171234567.',
+        ]);
 
         $user->update($data);
         Audit::log('UPDATE', 'Updated own profile', 'users', $user->user_id);

@@ -15,6 +15,7 @@ use App\Support\Audit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /** Complainant side: list, file, and view own complaints. */
 class ComplaintController extends Controller
@@ -29,8 +30,8 @@ class ComplaintController extends Controller
             $query->where('status_id', $request->integer('status'));
         }
         if ($request->filled('q')) {
-            $q = $request->string('q');
-            $query->where(fn ($w) => $w->where('title', 'like', "%{$q}%")->orWhere('reference_no', 'like', "%{$q}%"));
+            $q = trim((string) $request->input('q'));
+            $query->where(fn ($w) => $w->where('title', 'like', "%{$q}%")->orWhere('reference_no', 'like', "%{$q}%")->orWhere('description', 'like', "%{$q}%"));
         }
 
         return view('complaints.index', [
@@ -52,8 +53,8 @@ class ComplaintController extends Controller
     {
         $data = $request->validate([
             'report_type_id' => ['required', 'exists:report_types,report_type_id'],
-            'category_id' => ['required', 'exists:complaint_categories,category_id'],
-            'area_id' => ['required', 'exists:areas,area_id'],
+            'category_id' => ['required', Rule::exists('complaint_categories', 'category_id')->where('is_active', true)],
+            'area_id' => ['required', Rule::exists('areas', 'area_id')->where('is_active', true)],
             'title' => ['required', 'string', 'max:150'],
             'description' => ['required', 'string', 'min:20', 'max:5000'],
             'location_details' => ['nullable', 'string', 'max:255'],
@@ -61,6 +62,8 @@ class ComplaintController extends Controller
             'evidence' => ['nullable', 'array', 'max:5'],
             'evidence.*' => ['file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
         ], [
+            'category_id.exists' => 'The selected category is invalid or currently inactive.',
+            'area_id.exists' => 'The selected area is invalid or currently inactive.',
             'description.min' => 'Please describe what happened in at least 20 characters.',
             'evidence.max' => 'You can attach up to 5 files.',
             'evidence.*.max' => 'Each file must be 5 MB or smaller.',

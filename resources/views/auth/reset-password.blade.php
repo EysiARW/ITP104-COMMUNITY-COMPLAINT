@@ -25,7 +25,10 @@
             </div>
             <div class="field">
                 <label for="password_confirmation">Confirm new password <span class="req">*</span></label>
-                <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
+                <div class="pw">
+                    <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
+                    <button type="button" data-toggle-password>Show</button>
+                </div>
             </div>
             <button class="btn btn-light btn-block" type="submit">Reset password</button>
         </form>

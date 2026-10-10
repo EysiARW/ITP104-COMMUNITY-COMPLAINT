@@ -63,7 +63,10 @@
                 </div>
                 <div class="field">
                     <label for="password_confirmation">Confirm password <span class="req">*</span></label>
-                    <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
+                    <div class="pw">
+                        <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
+                        <button type="button" data-toggle-password>Show</button>
+                    </div>
                 </div>
             </div>
 

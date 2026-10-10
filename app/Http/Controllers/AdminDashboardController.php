@@ -16,7 +16,7 @@ class AdminDashboardController extends Controller
         $complaintsCount = Complaint::count();
         $pendingCount = Complaint::where('status_id', 1)->count();
         $assignedCount = Complaint::whereIn('status_id', [3, 4])->count();
-        $resolvedCount = Complaint::where('status_id', 5)->count();
+        $resolvedCount = Complaint::whereIn('status_id', [5, 6])->count();
         $residentsCount = User::where('role_id', User::ROLE_COMPLAINANT)->count();
         $pendingRegistrations = User::where('verification_status', User::STATUS_PENDING)->count();
 

@@ -30,7 +30,17 @@ class ComplaintController extends Controller
             $query->where(function ($w) use ($q) {
                 $w->where('title', 'like', "%{$q}%")
                     ->orWhere('reference_no', 'like', "%{$q}%")
+                    ->orWhere('description', 'like', "%{$q}%")
                     ->orWhereHas('complainant', fn ($c) => $c->where('first_name', 'like', "%{$q}%")->orWhere('last_name', 'like', "%{$q}%"));
+
+                $words = array_values(array_filter(explode(' ', $q)));
+                if (count($words) > 1) {
+                    $w->orWhereHas('complainant', function ($c) use ($words) {
+                        foreach ($words as $word) {
+                            $c->where(fn ($sub) => $sub->where('first_name', 'like', "%{$word}%")->orWhere('last_name', 'like', "%{$word}%"));
+                        }
+                    });
+                }
             });
         }
 
@@ -64,7 +74,7 @@ class ComplaintController extends Controller
         } elseif ($tab === 'in_progress') {
             $query->whereIn('status_id', [3, 4]);
         } elseif ($tab === 'resolved') {
-            $query->where('status_id', 5);
+            $query->whereIn('status_id', [5, 6]);
         }
 
         $complaints = $query->paginate(15)->withQueryString();
@@ -80,7 +90,7 @@ class ComplaintController extends Controller
             'needs_review' => Complaint::where('status_id', 1)->count(),
             'unassigned' => Complaint::whereDoesntHave('currentAssignment')->count(),
             'in_progress' => Complaint::whereIn('status_id', [3, 4])->count(),
-            'resolved' => Complaint::where('status_id', 5)->count(),
+            'resolved' => Complaint::whereIn('status_id', [5, 6])->count(),
         ];
 
         return view('admin.complaints.index', compact(

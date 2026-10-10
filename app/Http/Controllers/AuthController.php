@@ -8,6 +8,7 @@ use App\Support\Audit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -71,13 +72,17 @@ class AuthController extends Controller
             'last_name' => ['required', 'string', 'max:60'],
             'email' => ['required', 'email', 'max:120', 'unique:users,email'],
             'contact_number' => ['required', 'regex:/^(09|\+639)\d{9}$/'],
-            'area_id' => ['required', 'exists:areas,area_id'],
+            'area_id' => [
+                'required',
+                Rule::exists('areas', 'area_id')->where('is_active', true),
+            ],
             'address' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'verification_doc_type' => ['required', 'string', 'in:voters_cert,valid_id,certificate_of_residency'],
             'verification_doc' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'], // 5MB max
             'privacy' => ['accepted'],
         ], [
+            'area_id.exists' => 'Please select a valid, active purok/area.',
             'contact_number.regex' => 'Use a valid Philippine mobile number, e.g. 09171234567.',
             'verification_doc_type.required' => 'Please select the type of document you are submitting.',
             'verification_doc_type.in' => 'Please select a valid document type.',

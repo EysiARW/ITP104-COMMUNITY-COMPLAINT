@@ -47,10 +47,8 @@
             </select>
             @error('area_id')<span class="field-error">{{ $message }}</span>@enderror
         </div>
-        <div class="field">
-            <label for="incident_date">Date and time it happened <small class="muted">(optional)</small></label>
-            <input id="incident_date" type="datetime-local" name="incident_date" value="{{ old('incident_date') }}" max="{{ now()->format('Y-m-d\TH:i') }}">
-            @error('incident_date')<span class="field-error">{{ $message }}</span>@enderror
+        <div>
+            <x-datetime-picker name="incident_date" id="incident_date" label="Date and time it happened" />
         </div>
         <div class="field span-2">
             <label for="location_details">Exact location or landmark <small class="muted">(optional)</small></label>

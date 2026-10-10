@@ -24,6 +24,18 @@ class UserController extends Controller
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('contact_number', 'like', "%{$search}%");
+
+                $words = array_values(array_filter(explode(' ', $search)));
+                if (count($words) > 1) {
+                    $q->orWhere(function ($sub) use ($words) {
+                        foreach ($words as $w) {
+                            $sub->where(function ($inner) use ($w) {
+                                $inner->where('first_name', 'like', "%{$w}%")
+                                    ->orWhere('last_name', 'like', "%{$w}%");
+                            });
+                        }
+                    });
+                }
             });
         }
 
@@ -57,6 +69,18 @@ class UserController extends Controller
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('contact_number', 'like', "%{$search}%");
+
+                $words = array_values(array_filter(explode(' ', $search)));
+                if (count($words) > 1) {
+                    $q->orWhere(function ($sub) use ($words) {
+                        foreach ($words as $w) {
+                            $sub->where(function ($inner) use ($w) {
+                                $inner->where('first_name', 'like', "%{$w}%")
+                                    ->orWhere('last_name', 'like', "%{$w}%");
+                            });
+                        }
+                    });
+                }
             });
         }
 
@@ -165,6 +189,8 @@ class UserController extends Controller
             'contact_number.regex' => 'Please enter a valid Philippine mobile number (e.g., 09171234567).',
         ]);
 
+        $isStaff = (int) $validated['role_id'] === User::ROLE_ADMIN;
+
         $user = User::create([
             'role_id' => $validated['role_id'],
             'first_name' => $validated['first_name'],
@@ -173,11 +199,14 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password_hash' => Hash::make($validated['password']),
             'contact_number' => $validated['contact_number'] ?? null,
-            'department_id' => $validated['department_id'] ?? null,
-            'committee_position' => $validated['committee_position'] ?? null,
+            'department_id' => $isStaff ? ($validated['department_id'] ?? null) : null,
+            'committee_position' => $isStaff ? ($validated['committee_position'] ?? null) : null,
             'area_id' => $validated['area_id'] ?? null,
             'address' => $validated['address'] ?? null,
             'is_active' => $request->has('is_active'),
+            'verification_status' => User::STATUS_APPROVED,
+            'verified_at' => now(),
+            'verified_by' => auth()->id(),
         ]);
 
         Audit::log('CREATE', "Created user account for {$user->full_name} ({$user->email})", 'users', $user->user_id);
@@ -214,6 +243,8 @@ class UserController extends Controller
             'contact_number.regex' => 'Please enter a valid Philippine mobile number (e.g., 09171234567).',
         ]);
 
+        $isStaff = (int) $validated['role_id'] === User::ROLE_ADMIN;
+
         $updateData = [
             'role_id' => $validated['role_id'],
             'first_name' => $validated['first_name'],
@@ -221,8 +252,8 @@ class UserController extends Controller
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'contact_number' => $validated['contact_number'] ?? null,
-            'department_id' => $validated['department_id'] ?? null,
-            'committee_position' => $validated['committee_position'] ?? null,
+            'department_id' => $isStaff ? ($validated['department_id'] ?? null) : null,
+            'committee_position' => $isStaff ? ($validated['committee_position'] ?? null) : null,
             'area_id' => $validated['area_id'] ?? null,
             'address' => $validated['address'] ?? null,
             'is_active' => $request->has('is_active'),

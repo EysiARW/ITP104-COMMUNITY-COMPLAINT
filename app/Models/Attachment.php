@@ -15,6 +15,13 @@ class Attachment extends Model
         return ['uploaded_at' => 'datetime'];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            $model->uploaded_at = $model->uploaded_at ?? now();
+        });
+    }
+
     public function getRouteKeyName(): string
     {
         return 'attachment_id';

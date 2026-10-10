@@ -141,6 +141,8 @@ class ComplainantModuleTest extends TestCase
         $createPage = $this->actingAs($resident)->get('/complaints/create');
         $createPage->assertStatus(200);
         $createPage->assertSee('File a Complaint');
+        $createPage->assertSee('data-dtp', false);
+        $createPage->assertSee('⚡ Just now');
 
         // Submit complaint
         $postData = [
@@ -416,4 +418,114 @@ class ComplainantModuleTest extends TestCase
         $response = $this->actingAs($stranger)->get("/attachments/{$attachment->attachment_id}");
         $response->assertStatus(403);
     }
+
+    public function test_registration_fails_with_inactive_area(): void
+    {
+        $inactiveArea = Area::create([
+            'area_name' => 'Inactive Sub-purok',
+            'is_active' => false,
+        ]);
+
+        $response = $this->post('/register', [
+            'first_name' => 'Juan',
+            'last_name' => 'Luna',
+            'email' => 'juanluna@example.local',
+            'contact_number' => '09171234567',
+            'area_id' => $inactiveArea->area_id,
+            'address' => 'Purok X',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'verification_doc_type' => 'voters_cert',
+            'privacy' => 1,
+        ]);
+
+        $response->assertSessionHasErrors('area_id');
+    }
+
+    public function test_complaint_filing_fails_with_inactive_category_or_area(): void
+    {
+        $resident = User::firstOrCreate(
+            ['email' => 'active_filer@example.local'],
+            [
+                'role_id' => User::ROLE_COMPLAINANT,
+                'first_name' => 'Active',
+                'last_name' => 'Filer',
+                'password_hash' => bcrypt('secret'),
+                'is_active' => true,
+            ]
+        );
+
+        $inactiveCat = \App\Models\ComplaintCategory::create([
+            'category_name' => 'Inactive Category',
+            'is_active' => false,
+        ]);
+
+        $inactiveArea = Area::create([
+            'area_name' => 'Old Inactive Purok',
+            'is_active' => false,
+        ]);
+
+        $respCat = $this->actingAs($resident)->post('/complaints', [
+            'report_type_id' => 1,
+            'category_id' => $inactiveCat->category_id,
+            'area_id' => 1,
+            'title' => 'Test Inactive Category Rejection',
+            'description' => 'A valid description of what happened in the neighborhood.',
+        ]);
+        $respCat->assertSessionHasErrors('category_id');
+
+        $respArea = $this->actingAs($resident)->post('/complaints', [
+            'report_type_id' => 1,
+            'category_id' => 1,
+            'area_id' => $inactiveArea->area_id,
+            'title' => 'Test Inactive Area Rejection',
+            'description' => 'A valid description of what happened in the neighborhood.',
+        ]);
+        $respArea->assertSessionHasErrors('area_id');
+    }
+
+    public function test_status_history_and_assignment_timestamps_auto_populated(): void
+    {
+        $resident = User::firstOrCreate(
+            ['email' => 'timestamp_tester@example.local'],
+            [
+                'role_id' => User::ROLE_COMPLAINANT,
+                'first_name' => 'Timer',
+                'last_name' => 'Tester',
+                'password_hash' => bcrypt('secret'),
+                'is_active' => true,
+            ]
+        );
+
+        $complaint = Complaint::create([
+            'reference_no' => 'BRGY-2026-11223',
+            'complainant_id' => $resident->user_id,
+            'report_type_id' => 1,
+            'category_id' => 1,
+            'priority_id' => 2,
+            'area_id' => 1,
+            'status_id' => 1,
+            'title' => 'Timestamp Test',
+            'description' => 'Checking in-memory auto-population of timestamps.',
+        ]);
+
+        $history = \App\Models\StatusHistory::create([
+            'complaint_id' => $complaint->complaint_id,
+            'old_status_id' => null,
+            'new_status_id' => 1,
+            'changed_by' => $resident->user_id,
+        ]);
+
+        $this->assertNotNull($history->changed_at);
+
+        $assignment = \App\Models\ComplaintAssignment::create([
+            'complaint_id' => $complaint->complaint_id,
+            'assigned_to' => $resident->user_id,
+            'assigned_by' => $resident->user_id,
+            'is_current' => true,
+        ]);
+
+        $this->assertNotNull($assignment->assigned_at);
+    }
 }
+

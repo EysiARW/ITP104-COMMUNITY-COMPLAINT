@@ -15,6 +15,13 @@ class ComplaintAssignment extends Model
         return ['assigned_at' => 'datetime', 'is_current' => 'boolean'];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            $model->assigned_at = $model->assigned_at ?? now();
+        });
+    }
+
     public function complaint() { return $this->belongsTo(Complaint::class, 'complaint_id', 'complaint_id'); }
     public function assignee() { return $this->belongsTo(User::class, 'assigned_to', 'user_id'); }
     public function assigner() { return $this->belongsTo(User::class, 'assigned_by', 'user_id'); }
