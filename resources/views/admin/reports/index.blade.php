@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 plugins: { legend: { display: false } },
                 scales: {
                     y: { beginAtZero: true, ticks: { precision: 0 } },
-                    x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 45, font: { size: 11 } } }
+                    x: { ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 11 } } }
                 }
             }
         });
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 plugins: { legend: { display: false } },
                 scales: {
                     y: { beginAtZero: true, ticks: { precision: 0 } },
-                    x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 45, font: { size: 11 } } }
+                    x: { ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 11 } } }
                 }
             }
         });

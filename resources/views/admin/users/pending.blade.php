@@ -123,7 +123,7 @@
             </button>
         </div>
 
-        <div id="doc-preview-container" style="flex: 1; min-height: 380px; max-height: 60vh; overflow: auto; display: flex; justify-content: center; align-items: center; background: #f8f9fe; border-radius: 10px; border: 1px solid var(--line); padding: 12px;">
+        <div id="doc-preview-container" style="flex: 1; min-height: 320px; max-height: 60vh; max-height: 60dvh; overflow: auto; display: flex; justify-content: center; align-items: center; background: var(--bg); border-radius: 10px; border: 1px solid var(--line); padding: 12px;">
             <!-- Rendered image or iframe injected via JS -->
         </div>
 
