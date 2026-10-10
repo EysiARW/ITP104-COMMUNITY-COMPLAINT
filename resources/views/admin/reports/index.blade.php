@@ -69,7 +69,7 @@
 <div class="card">
     <h3>Filter Complaint Records</h3>
     <form method="GET" class="filters" style="margin-bottom: 20px;">
-        <div style="display:flex; gap:10px; flex-wrap:wrap; width:100%;">
+        <div class="filter-row" style="display:flex; gap:10px; flex-wrap:wrap; width:100%;">
             <select name="status_id" aria-label="Status">
                 <option value="">All Statuses</option>
                 @foreach ($statuses as $s)

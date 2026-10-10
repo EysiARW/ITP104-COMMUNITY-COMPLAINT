@@ -6,7 +6,7 @@
 @section('content')
 <div class="card">
     {{-- Quick-filter pills --}}
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1.25rem; border-bottom:1px solid var(--line); padding-bottom:0.85rem;">
+    <div class="tab-pills" style="margin-bottom:1.25rem; border-bottom:1px solid var(--line); padding-bottom:0.85rem;">
         <a href="{{ route('admin.complaints.index', array_merge(request()->except(['tab', 'page']), ['tab' => 'all'])) }}"
            class="btn {{ ($tab ?? 'all') === 'all' ? 'btn-primary' : 'btn-outline' }} btn-sm" style="border-radius:9999px;">
             All <span style="opacity:0.8; font-size:12px; margin-left:4px;">({{ $pillCounts['all'] ?? 0 }})</span>

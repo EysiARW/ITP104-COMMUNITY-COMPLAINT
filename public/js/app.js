@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleSidebar = (open) => { sidebar?.classList.toggle('open', open); scrim?.classList.toggle('show', open); };
   $('[data-sidebar-toggle]')?.addEventListener('click', () => toggleSidebar(!sidebar.classList.contains('open')));
   scrim?.addEventListener('click', () => toggleSidebar(false));
+  $$('#sidebar a').forEach((a) => a.addEventListener('click', () => { if (window.innerWidth <= 900) toggleSidebar(false); }));
 
   /* Sidebar folding (desktop hover-expand) */
   let hoverLock = false;
@@ -91,7 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* Public navbar (mobile) */
-  $('[data-nav-toggle]')?.addEventListener('click', () => $('#pubnav').classList.toggle('open'));
+  const pubnav = $('#pubnav');
+  $('[data-nav-toggle]')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    pubnav?.classList.toggle('open');
+  });
+  $$('#pubnav a').forEach((a) => a.addEventListener('click', () => { pubnav?.classList.remove('open'); }));
+  document.addEventListener('click', (e) => {
+    if (pubnav?.classList.contains('open') && !e.target.closest('#pubnav') && !e.target.closest('[data-nav-toggle]')) {
+      pubnav.classList.remove('open');
+    }
+  });
 
   /* Dropdowns (notifications, user menu) */
   $$('[data-dropdown]').forEach((dd) => {

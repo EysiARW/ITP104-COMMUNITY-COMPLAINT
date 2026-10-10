@@ -6,7 +6,10 @@
 <header class="topbar">
     <div class="left">
         <button class="icon-btn menu-btn" type="button" data-sidebar-toggle aria-label="Open menu"><x-icon name="menu" /></button>
-        <span class="muted">{{ now()->format('l, F j, Y') }}</span>
+        <span class="muted topbar-date">
+            <span class="date-full">{{ now()->format('l, F j, Y') }}</span>
+            <span class="date-short">{{ now()->format('M j, Y') }}</span>
+        </span>
     </div>
 
     <div class="top-right">
