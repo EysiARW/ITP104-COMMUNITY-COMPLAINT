@@ -679,5 +679,70 @@ class AdminModuleTest extends TestCase
         ]);
         $respInactive->assertSessionHasErrors('assigned_to');
     }
+
+    public function test_admin_cannot_link_inactive_department_to_new_category(): void
+    {
+        $inactiveDept = Department::create([
+            'department_name' => 'Decommissioned Committee',
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($this->admin)->post('/admin/categories', [
+            'category_name' => 'Special Test Category',
+            'department_id' => $inactiveDept->department_id,
+        ]);
+
+        $response->assertSessionHasErrors('department_id');
+    }
+
+    public function test_admin_cannot_assign_inactive_dept_or_area_when_creating_user(): void
+    {
+        $inactiveDept = Department::create([
+            'department_name' => 'Old Committee',
+            'is_active' => false,
+        ]);
+
+        $inactiveArea = Area::create([
+            'area_name' => 'Closed Purok',
+            'is_active' => false,
+        ]);
+
+        $respDept = $this->actingAs($this->admin)->post('/admin/users', [
+            'role_id' => User::ROLE_ADMIN,
+            'first_name' => 'Staff',
+            'last_name' => 'Officer',
+            'email' => 'officer_inactive_dept@example.local',
+            'password' => 'Password123!',
+            'department_id' => $inactiveDept->department_id,
+        ]);
+        $respDept->assertSessionHasErrors('department_id');
+
+        $respArea = $this->actingAs($this->admin)->post('/admin/users', [
+            'role_id' => User::ROLE_ADMIN,
+            'first_name' => 'Staff',
+            'last_name' => 'Officer',
+            'email' => 'officer_inactive_area@example.local',
+            'password' => 'Password123!',
+            'area_id' => $inactiveArea->area_id,
+        ]);
+        $respArea->assertSessionHasErrors('area_id');
+    }
+
+    public function test_report_and_log_controllers_handle_invalid_date_inputs_gracefully(): void
+    {
+        // Malformed date strings shouldn't throw 500 or SQL errors
+        $repIndex = $this->actingAs($this->admin)->get('/admin/reports?date_from=invalid-date&date_to=bad-date');
+        $repIndex->assertStatus(200);
+
+        $repExport = $this->actingAs($this->admin)->get('/admin/reports/export?date_from=invalid-date&date_to=bad-date');
+        $repExport->assertStatus(200);
+
+        $repPrint = $this->actingAs($this->admin)->get('/admin/reports/print?date_from=invalid-date&date_to=bad-date');
+        $repPrint->assertStatus(200);
+
+        $logIndex = $this->actingAs($this->admin)->get('/admin/logs?date_from=invalid-date&date_to=bad-date');
+        $logIndex->assertStatus(200);
+    }
 }
+
 

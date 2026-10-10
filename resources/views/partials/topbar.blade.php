@@ -36,7 +36,7 @@
                     @forelse ($notifs as $n)
                         <a class="dd-item {{ $n->is_read ? '' : 'unread' }}" href="{{ route('notifications.open', $n->notification_id) }}">
                             {{ $n->message }}
-                            <small>{{ $n->created_at->diffForHumans() }}</small>
+                            <small>{{ $n->created_at ? $n->created_at->diffForHumans() : 'Just now' }}</small>
                         </a>
                     @empty
                         <div class="dd-empty">You're all caught up.</div>

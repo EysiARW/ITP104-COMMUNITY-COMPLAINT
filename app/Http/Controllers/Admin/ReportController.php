@@ -20,10 +20,10 @@ class ReportController extends Controller
         $query = Complaint::with(['complainant', 'category', 'status', 'priority', 'area']);
 
         // Date range
-        if ($from = $request->input('date_from')) {
+        if (($from = $request->input('date_from')) && strtotime($from) !== false) {
             $query->whereDate('created_at', '>=', $from);
         }
-        if ($to = $request->input('date_to')) {
+        if (($to = $request->input('date_to')) && strtotime($to) !== false) {
             $query->whereDate('created_at', '<=', $to);
         }
 
@@ -106,10 +106,10 @@ class ReportController extends Controller
     {
         $query = Complaint::with(['complainant', 'category', 'status', 'priority', 'area']);
 
-        if ($from = $request->input('date_from')) {
+        if (($from = $request->input('date_from')) && strtotime($from) !== false) {
             $query->whereDate('created_at', '>=', $from);
         }
-        if ($to = $request->input('date_to')) {
+        if (($to = $request->input('date_to')) && strtotime($to) !== false) {
             $query->whereDate('created_at', '<=', $to);
         }
         if ($statusId = $request->input('status_id')) {
@@ -182,10 +182,10 @@ class ReportController extends Controller
     {
         $query = Complaint::with(['complainant', 'category', 'status', 'priority', 'area']);
 
-        if ($from = $request->input('date_from')) {
+        if (($from = $request->input('date_from')) && strtotime($from) !== false) {
             $query->whereDate('created_at', '>=', $from);
         }
-        if ($to = $request->input('date_to')) {
+        if (($to = $request->input('date_to')) && strtotime($to) !== false) {
             $query->whereDate('created_at', '<=', $to);
         }
         if ($statusId = $request->input('status_id')) {

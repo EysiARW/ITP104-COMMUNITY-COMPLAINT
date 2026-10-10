@@ -29,11 +29,11 @@ class LogController extends Controller
             });
         }
 
-        if ($from = $request->input('date_from')) {
+        if (($from = $request->input('date_from')) && strtotime($from) !== false) {
             $query->whereDate('created_at', '>=', $from);
         }
 
-        if ($to = $request->input('date_to')) {
+        if (($to = $request->input('date_to')) && strtotime($to) !== false) {
             $query->whereDate('created_at', '<=', $to);
         }
 

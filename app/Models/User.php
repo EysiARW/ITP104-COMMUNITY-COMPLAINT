@@ -61,7 +61,8 @@ class User extends Authenticatable
     {
         $first = (string) $this->first_name;
         $last = (string) $this->last_name;
-        return strtoupper(mb_substr($first, 0, 1) . mb_substr($last, 0, 1));
+        $in = strtoupper(mb_substr($first, 0, 1) . mb_substr($last, 0, 1));
+        return $in !== '' ? $in : 'U';
     }
 
     public function role() { return $this->belongsTo(Role::class, 'role_id', 'role_id'); }

@@ -180,12 +180,14 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:120', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
             'contact_number' => ['nullable', 'regex:/^(09|\+639)\d{9}$/'],
-            'department_id' => ['nullable', 'exists:departments,department_id'],
+            'department_id' => ['nullable', Rule::exists('departments', 'department_id')->where('is_active', true)],
             'committee_position' => ['nullable', 'string', 'max:100'],
-            'area_id' => ['nullable', 'exists:areas,area_id'],
+            'area_id' => ['nullable', Rule::exists('areas', 'area_id')->where('is_active', true)],
             'address' => ['nullable', 'string', 'max:255'],
             'is_active' => ['nullable', 'boolean'],
         ], [
+            'department_id.exists' => 'The selected department is invalid or currently inactive.',
+            'area_id.exists' => 'The selected area is invalid or currently inactive.',
             'contact_number.regex' => 'Please enter a valid Philippine mobile number (e.g., 09171234567).',
         ]);
 
