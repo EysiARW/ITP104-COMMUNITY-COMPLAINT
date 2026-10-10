@@ -4,8 +4,11 @@
     @include('partials.head')
     <title>@yield('title', 'Home') | Brgy. Banlic CCIRS</title>
 </head>
-<body class="public">
-<div class="public-bg">
+@php
+    $isAuthCleanPage = request()->routeIs('login', 'register');
+@endphp
+<body class="public {{ $isAuthCleanPage ? 'auth-clean-bg' : 'has-hall-bg' }}">
+<div class="public-bg {{ $isAuthCleanPage ? 'no-bg-image' : 'has-bg-image' }}">
     <header class="pub-nav">
         <a class="brand" href="{{ route('home') }}" aria-label="Home"><img src="{{ asset('images/logo.png') }}" alt="Barangay Banlic seal"></a>
         <button class="nav-toggle" type="button" data-nav-toggle aria-label="Toggle navigation menu">

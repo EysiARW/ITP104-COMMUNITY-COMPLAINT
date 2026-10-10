@@ -110,9 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* Virtual Keyboard auto-adjust for mobile devices */
+  /* Virtual Keyboard auto-adjust for mobile devices only */
+  const isMobileDevice = () => window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 900);
+
   if (window.visualViewport) {
     const onViewportResize = () => {
+      if (!isMobileDevice()) {
+        document.body.classList.remove('keyboard-open');
+        return;
+      }
       const isShort = window.visualViewport.height < window.innerHeight * 0.78;
       document.body.classList.toggle('keyboard-open', isShort);
     };
@@ -122,12 +128,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Auto-scroll input into optimal view on mobile focus
   $$('.auth-card input').forEach((input) => {
     input.addEventListener('focus', () => {
+      if (!isMobileDevice()) return;
       document.body.classList.add('keyboard-open');
       setTimeout(() => {
         input.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 250);
     });
     input.addEventListener('blur', () => {
+      if (!isMobileDevice()) {
+        document.body.classList.remove('keyboard-open');
+        return;
+      }
       setTimeout(() => {
         if (!document.activeElement || !document.activeElement.matches('.auth-card input')) {
           if (!window.visualViewport || window.visualViewport.height >= window.innerHeight * 0.8) {

@@ -6,7 +6,7 @@
     @include('partials.head')
     <title>@yield('title', 'Dashboard') | Brgy. Banlic CCIRS</title>
 </head>
-<body>
+<body class="app-body has-hall-bg">
 <div class="app">
     @include('partials.sidebar')
     <div class="scrim" id="scrim"></div>

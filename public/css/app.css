@@ -4,6 +4,7 @@
   --ink:#1c2340; --muted:#6b7394; --line:#e3e7f3; --bg:#f3f5fb; --card:#fff;
   --ok:#15803d; --warn:#b45309; --bad:#b91c1c; --radius:14px;
   --shadow:0 6px 24px rgba(20,31,94,.08);
+  --hall-bg-image:url('../images/Barangay%20Banilic%20Municipal%20Hall%20Under%20Blue%20Skies.png');
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -129,11 +130,50 @@ tbody tr:hover{background:#f8f9fe}
 .file-item .meta small{color:var(--muted)}
 .file-item button{border:0;background:none;color:var(--bad);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px}
 
-/* ===== Public pages (landing, login, register...) ===== */
+/* ===== Public pages (landing, track, login, register...) ===== */
 .public{color:#fff;background:var(--navy-2)}
-.public-bg{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
-  background:linear-gradient(180deg,rgba(40,62,140,.72) 0%,rgba(22,34,105,.92) 55%,#121b54 100%),var(--navy)}
-@media(min-width:900px){.public-bg{background-attachment:fixed}}
+.public-bg{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
+
+/* Clean background specifically for login and register (no background image) */
+.public-bg.no-bg-image{
+  background:linear-gradient(180deg,rgba(40,62,140,.72) 0%,rgba(22,34,105,.92) 55%,#121b54 100%),var(--navy);
+}
+@media(min-width:900px){.public-bg.no-bg-image{background-attachment:fixed}}
+html.dark .public-bg.no-bg-image{
+  background:linear-gradient(180deg,rgba(16,24,65,.85) 0%,rgba(10,15,45,.95) 55%,#070a1a 100%),var(--navy-2);
+}
+.public-bg.no-bg-image::before,
+.public-bg.no-bg-image::after{display:none!important;content:none!important}
+
+/* System-wide Municipal Hall background with blur & gradient overlay on public pages */
+.public-bg.has-bg-image{background:transparent;isolation:isolate}
+.public-bg.has-bg-image::before{
+  content:"";
+  position:fixed;
+  inset:-20px;
+  background-image:var(--hall-bg-image);
+  background-position:center 20%;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter:blur(5px) saturate(1.15) brightness(0.92);
+  transform:scale(1.04);
+  z-index:-2;
+  pointer-events:none;
+}
+.public-bg.has-bg-image::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:linear-gradient(180deg,rgba(14,23,68,.58) 0%,rgba(11,18,56,.72) 45%,rgba(7,10,36,.88) 100%);
+  z-index:-1;
+  pointer-events:none;
+}
+html.dark .public-bg.has-bg-image::before{
+  filter:blur(5px) saturate(1.05) brightness(0.65);
+}
+html.dark .public-bg.has-bg-image::after{
+  background:linear-gradient(180deg,rgba(7,11,32,.74) 0%,rgba(5,8,24,.84) 45%,rgba(3,4,14,.94) 100%);
+}
 .pub-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 4%;position:relative;z-index:90}
 .pub-nav .brand img{height:62px;width:62px}
 .pub-nav nav{display:flex;gap:30px}
@@ -196,6 +236,69 @@ tbody tr:hover{background:#f8f9fe}
 .track-result h3{font-size:24px;margin-bottom:12px}
 .page-title{text-align:center;padding:10px 6% 24px}.page-title h1{font-size:clamp(32px,5vw,52px)}
 .prose{max-width:760px;margin:0 auto;padding:10px 6% 70px}.prose h2{font-size:26px;margin:26px 0 8px}.prose p,.prose li{opacity:.93}
+
+/* ===== Authenticated App Shell: Municipal Hall Atmospheric Backdrop ===== */
+body.has-hall-bg:not(.public){
+  position:relative;
+  background:transparent;
+}
+body.has-hall-bg:not(.public)::before{
+  content:"";
+  position:fixed;
+  inset:-24px;
+  background-image:var(--hall-bg-image);
+  background-position:center top;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter:blur(14px) saturate(1.15);
+  transform:scale(1.05);
+  opacity:0.20;
+  z-index:-2;
+  pointer-events:none;
+}
+body.has-hall-bg:not(.public)::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:linear-gradient(180deg,rgba(243,245,251,.88) 0%,rgba(238,241,249,.94) 100%);
+  z-index:-1;
+  pointer-events:none;
+}
+html.dark body.has-hall-bg:not(.public)::before{
+  opacity:0.12;
+  filter:blur(14px) saturate(0.95) brightness(0.65);
+}
+html.dark body.has-hall-bg:not(.public)::after{
+  background:linear-gradient(180deg,rgba(12,17,43,.90) 0%,rgba(8,12,32,.96) 100%);
+}
+
+/* Glass depth enhancement for dashboard components */
+body.has-hall-bg:not(.public) .topbar{
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+html.dark body.has-hall-bg:not(.public) .topbar{
+  background:rgba(20,27,60,.92);
+}
+body.has-hall-bg:not(.public) .card{
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(227,231,243,.92);
+}
+html.dark body.has-hall-bg:not(.public) .card{
+  background:rgba(20,27,60,.90);
+  border-color:rgba(42,54,105,.9);
+}
+body.has-hall-bg:not(.public) .stat{
+  background:rgba(255,255,255,.90);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+html.dark body.has-hall-bg:not(.public) .stat{
+  background:rgba(20,27,60,.86);
+}
 
 /* ===== App shell (sidebar + topbar) ===== */
 .app{display:flex;min-height:100vh}
@@ -576,15 +679,17 @@ tbody tr:hover{background:#f8f9fe}
   .stats{grid-template-columns:1fr}
 }
 
-/* ===== Virtual Keyboard & Short Viewport Auto-Adjustment ===== */
-body.keyboard-open .pub-footer{display:none!important}
-body.keyboard-open .auth-wrap{justify-content:flex-start!important;padding:8px 14px 20px!important}
-body.keyboard-open .auth-card{margin-top:0!important;margin-bottom:12px!important;padding:18px 16px!important}
-body.keyboard-open .auth-card .lead{display:none!important}
-body.keyboard-open .field{margin-bottom:10px!important}
-body.keyboard-open .pub-nav{padding-top:8px!important;padding-bottom:8px!important}
+/* ===== Virtual Keyboard & Short Viewport Auto-Adjustment (Mobile only) ===== */
+@media(max-width:768px){
+  body.keyboard-open .pub-footer{display:none!important}
+  body.keyboard-open .auth-wrap{justify-content:flex-start!important;padding:8px 14px 20px!important}
+  body.keyboard-open .auth-card{margin-top:0!important;margin-bottom:12px!important;padding:18px 16px!important}
+  body.keyboard-open .auth-card .lead{display:none!important}
+  body.keyboard-open .field{margin-bottom:10px!important}
+  body.keyboard-open .pub-nav{padding-top:8px!important;padding-bottom:8px!important}
+}
 
-@media(max-height:640px){
+@media(max-width:768px) and (max-height:640px){
   .pub-footer{display:none!important}
   .auth-wrap{justify-content:flex-start!important;padding:10px 14px 20px!important}
   .auth-card{margin:0 auto 12px!important;padding:18px 16px!important}
