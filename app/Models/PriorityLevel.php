@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class PriorityLevel extends Model
+{
+    protected $table = 'priority_levels';
+    protected $primaryKey = 'priority_id';
+    public $timestamps = false;
+    protected $guarded = [];
+}
