@@ -8,7 +8,13 @@
 <div class="public-bg">
     <header class="pub-nav">
         <a class="brand" href="{{ route('home') }}" aria-label="Home"><img src="{{ asset('images/logo.png') }}" alt="Barangay Banlic seal"></a>
-        <button class="nav-toggle" type="button" data-nav-toggle aria-label="Toggle menu"><x-icon name="menu" /></button>
+        <button class="nav-toggle" type="button" data-nav-toggle aria-label="Toggle navigation menu">
+            <svg class="hamburger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="3.5" y1="6" x2="20.5" y2="6"></line>
+                <line x1="3.5" y1="12" x2="20.5" y2="12"></line>
+                <line x1="3.5" y1="18" x2="20.5" y2="18"></line>
+            </svg>
+        </button>
         <nav id="pubnav">
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('report') }}">Report</a>

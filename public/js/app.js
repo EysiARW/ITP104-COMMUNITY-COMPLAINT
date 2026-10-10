@@ -93,15 +93,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Public navbar (mobile) */
   const pubnav = $('#pubnav');
-  $('[data-nav-toggle]')?.addEventListener('click', (e) => {
+  const navToggleBtn = $('[data-nav-toggle]');
+  navToggleBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    pubnav?.classList.toggle('open');
+    const isOpen = pubnav?.classList.toggle('open');
+    navToggleBtn.classList.toggle('open', isOpen);
   });
-  $$('#pubnav a').forEach((a) => a.addEventListener('click', () => { pubnav?.classList.remove('open'); }));
+  $$('#pubnav a').forEach((a) => a.addEventListener('click', () => {
+    pubnav?.classList.remove('open');
+    navToggleBtn?.classList.remove('open');
+  }));
   document.addEventListener('click', (e) => {
     if (pubnav?.classList.contains('open') && !e.target.closest('#pubnav') && !e.target.closest('[data-nav-toggle]')) {
       pubnav.classList.remove('open');
+      navToggleBtn?.classList.remove('open');
     }
+  });
+
+  /* Virtual Keyboard auto-adjust for mobile devices */
+  if (window.visualViewport) {
+    const onViewportResize = () => {
+      const isShort = window.visualViewport.height < window.innerHeight * 0.78;
+      document.body.classList.toggle('keyboard-open', isShort);
+    };
+    window.visualViewport.addEventListener('resize', onViewportResize);
+  }
+
+  // Auto-scroll input into optimal view on mobile focus
+  $$('.auth-card input').forEach((input) => {
+    input.addEventListener('focus', () => {
+      document.body.classList.add('keyboard-open');
+      setTimeout(() => {
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 250);
+    });
+    input.addEventListener('blur', () => {
+      setTimeout(() => {
+        if (!document.activeElement || !document.activeElement.matches('.auth-card input')) {
+          if (!window.visualViewport || window.visualViewport.height >= window.innerHeight * 0.8) {
+            document.body.classList.remove('keyboard-open');
+          }
+        }
+      }, 200);
+    });
   });
 
   /* Dropdowns (notifications, user menu) */
