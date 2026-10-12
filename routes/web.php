@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ComplaintController;
@@ -43,7 +42,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/forgot-password', [PasswordController::class, 'request'])->name('password.request');
     Route::post('/forgot-password', [PasswordController::class, 'email'])->middleware('throttle:5,1')->name('password.email');
     Route::get('/reset-password/{token}', [PasswordController::class, 'resetForm'])->name('password.reset');
-    Route::post('/reset-password', [PasswordController::class, 'update'])->name('password.update');
+    Route::post('/reset-password', [PasswordController::class, 'update'])->middleware('throttle:6,1')->name('password.update');
 });
 
 /*
@@ -71,7 +70,7 @@ Route::middleware('auth')->group(function () {
 
     /* Admin / barangay staff (Balbero, Bandong, Capoy add their routes inside this group) */
     Route::middleware(EnsureRole::class . ':admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
         /* Balbero: All Complaints & Status / Officer Assignment */
         Route::get('complaints', [\App\Http\Controllers\Admin\ComplaintController::class, 'index'])->name('complaints.index');

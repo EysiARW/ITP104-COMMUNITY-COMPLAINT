@@ -47,7 +47,10 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'category_name' => ['required', 'string', 'max:100', Rule::unique('complaint_categories', 'category_name')->ignore($category->category_id, 'category_id')],
-            'department_id' => ['nullable', 'exists:departments,department_id'],
+            'department_id' => [
+                'nullable',
+                Rule::exists('departments', 'department_id')->where(fn ($q) => $q->where('is_active', true)->orWhere('department_id', $category->department_id)),
+            ],
             'description' => ['nullable', 'string', 'max:255'],
             'is_active' => ['nullable', 'boolean'],
         ]);

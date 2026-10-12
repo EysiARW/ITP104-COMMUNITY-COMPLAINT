@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Area;
 use App\Models\Complaint;
 use App\Models\ComplaintCategory;
@@ -9,7 +10,7 @@ use App\Models\ComplaintStatus;
 use App\Models\User;
 use Carbon\Carbon;
 
-class AdminDashboardController extends Controller
+class DashboardController extends Controller
 {
     public function index()
     {

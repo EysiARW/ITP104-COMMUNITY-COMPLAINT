@@ -139,13 +139,11 @@
 
                 const isoStr = `${d}T${pad(h24)}:${pad(m)}`;
                 const selectedDate = new Date(`${d}T${pad(h24)}:${pad(m)}:00`);
-                const now = new Date();
+                const graceTime = Date.now() + 5 * 60 * 1000;
 
-                if (!skipClamp && selectedDate > now) {
+                if (!isNaN(selectedDate.getTime()) && selectedDate.getTime() > graceTime) {
                     warn.style.display = 'inline';
-                    warn.textContent = 'Future time clamped to current time.';
-                    setTimeFromDate(now);
-                    return;
+                    warn.textContent = 'The incident date and time cannot be in the future.';
                 } else {
                     warn.style.display = 'none';
                 }
@@ -184,6 +182,7 @@
             }
 
             dateInput.addEventListener('change', () => updateHiddenAndPreview());
+            dateInput.addEventListener('input', () => updateHiddenAndPreview());
             hourSelect.addEventListener('change', () => {
                 if (!dateInput.value) {
                     const now = new Date();

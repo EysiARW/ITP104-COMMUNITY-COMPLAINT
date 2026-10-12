@@ -122,7 +122,17 @@ class UserController extends Controller
             return \App\Http\Controllers\AttachmentController::placeholderSvg($user->verification_doc_name ?? 'verification_document');
         }
 
-        abort(404, 'Verification document not found on server.');
+        return response()->view('attachments.missing', [
+            'attachment' => (object) [
+                'file_name' => $user->verification_doc_name ?? 'verification_document',
+                'file_type' => $user->verification_doc_type ?? 'Unknown',
+                'formatted_size' => 'N/A',
+                'uploaded_at' => $user->created_at,
+            ],
+            'complaint' => null,
+            'returnUrl' => route('admin.users.pending'),
+            'returnText' => 'Return to Pending Applicants',
+        ], 404);
     }
 
     public function approve(User $user)
@@ -236,9 +246,15 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:120', Rule::unique('users', 'email')->ignore($user->user_id, 'user_id')],
             'password' => ['nullable', 'string', 'min:8'],
             'contact_number' => ['nullable', 'regex:/^(09|\+639)\d{9}$/'],
-            'department_id' => ['nullable', 'exists:departments,department_id'],
+            'department_id' => [
+                'nullable',
+                Rule::exists('departments', 'department_id')->where(fn ($q) => $q->where('is_active', true)->orWhere('department_id', $user->department_id)),
+            ],
             'committee_position' => ['nullable', 'string', 'max:100'],
-            'area_id' => ['nullable', 'exists:areas,area_id'],
+            'area_id' => [
+                'nullable',
+                Rule::exists('areas', 'area_id')->where(fn ($q) => $q->where('is_active', true)->orWhere('area_id', $user->area_id)),
+            ],
             'address' => ['nullable', 'string', 'max:255'],
             'is_active' => ['nullable', 'boolean'],
         ], [

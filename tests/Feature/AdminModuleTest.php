@@ -743,6 +743,94 @@ class AdminModuleTest extends TestCase
         $logIndex = $this->actingAs($this->admin)->get('/admin/logs?date_from=invalid-date&date_to=bad-date');
         $logIndex->assertStatus(200);
     }
+
+    public function test_admin_user_update_rejects_inactive_department_or_area(): void
+    {
+        $targetUser = User::create([
+            'role_id' => User::ROLE_ADMIN,
+            'first_name' => 'Target',
+            'last_name' => 'Staff',
+            'email' => 'target.staff@example.local',
+            'password_hash' => bcrypt('password123'),
+            'is_active' => true,
+        ]);
+
+        $inactiveDept = Department::create([
+            'department_name' => 'Deactivated Dept',
+            'is_active' => false,
+        ]);
+
+        $inactiveArea = Area::create([
+            'area_name' => 'Deactivated Purok',
+            'is_active' => false,
+        ]);
+
+        $respDept = $this->actingAs($this->admin)->put("/admin/users/{$targetUser->user_id}", [
+            'role_id' => User::ROLE_ADMIN,
+            'first_name' => 'Target',
+            'last_name' => 'Staff',
+            'email' => 'target.staff@example.local',
+            'department_id' => $inactiveDept->department_id,
+        ]);
+        $respDept->assertSessionHasErrors('department_id');
+
+        $respArea = $this->actingAs($this->admin)->put("/admin/users/{$targetUser->user_id}", [
+            'role_id' => User::ROLE_ADMIN,
+            'first_name' => 'Target',
+            'last_name' => 'Staff',
+            'email' => 'target.staff@example.local',
+            'area_id' => $inactiveArea->area_id,
+        ]);
+        $respArea->assertSessionHasErrors('area_id');
+    }
+
+    public function test_admin_category_update_rejects_inactive_department(): void
+    {
+        $category = ComplaintCategory::create([
+            'category_name' => 'Test Update Category',
+            'is_active' => true,
+        ]);
+
+        $inactiveDept = Department::create([
+            'department_name' => 'Archived Dept',
+            'is_active' => false,
+        ]);
+
+        $resp = $this->actingAs($this->admin)->put("/admin/categories/{$category->category_id}", [
+            'category_name' => 'Test Update Category',
+            'department_id' => $inactiveDept->department_id,
+        ]);
+        $resp->assertSessionHasErrors('department_id');
+    }
+
+    public function test_missing_user_verification_document_renders_styled_fallback(): void
+    {
+        $user = User::create([
+            'role_id' => User::ROLE_COMPLAINANT,
+            'first_name' => 'Missing',
+            'last_name' => 'DocResident',
+            'email' => 'missing_doc@example.local',
+            'password_hash' => bcrypt('secret'),
+            'verification_doc_path' => 'verification_documents/non_existent_file.pdf',
+            'verification_doc_name' => 'id_card.pdf',
+            'verification_doc_type' => 'valid_id',
+            'verification_status' => User::STATUS_PENDING,
+            'is_active' => false,
+        ]);
+
+        // Browser request returns 404 with styled missing view
+        $htmlResp = $this->actingAs($this->admin)->get("/admin/users/{$user->user_id}/document");
+        $htmlResp->assertStatus(404);
+        $htmlResp->assertSee('File Not Found on Storage Disk');
+        $htmlResp->assertSee('Return to Pending Applicants');
+
+        // Image request returns 200 with SVG placeholder
+        $imgResp = $this->actingAs($this->admin)->get("/admin/users/{$user->user_id}/document", [
+            'Sec-Fetch-Dest' => 'image',
+        ]);
+        $imgResp->assertStatus(200);
+        $imgResp->assertHeader('Content-Type', 'image/svg+xml');
+    }
 }
 
 

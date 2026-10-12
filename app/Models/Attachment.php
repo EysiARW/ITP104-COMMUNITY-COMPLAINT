@@ -29,7 +29,12 @@ class Attachment extends Model
 
     public function isImage(): bool
     {
-        return str_starts_with((string) $this->file_type, 'image/');
+        if (str_starts_with((string) $this->file_type, 'image/')) {
+            return true;
+        }
+
+        $ext = strtolower(pathinfo((string) ($this->file_name ?: $this->file_path), PATHINFO_EXTENSION));
+        return in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'], true);
     }
 
     public function getFormattedSizeAttribute(): string

@@ -527,5 +527,51 @@ class ComplainantModuleTest extends TestCase
 
         $this->assertNotNull($assignment->assigned_at);
     }
+
+    public function test_password_reset_flow(): void
+    {
+        $user = User::create([
+            'role_id' => User::ROLE_COMPLAINANT,
+            'first_name' => 'Reset',
+            'last_name' => 'Tester',
+            'email' => 'reset_tester@example.local',
+            'password_hash' => Hash::make('OldPassword123!'),
+            'verification_status' => User::STATUS_APPROVED,
+            'is_active' => true,
+        ]);
+
+        // Request reset link
+        $resp = $this->post('/forgot-password', ['email' => $user->email]);
+        $resp->assertSessionHas('status');
+
+        $tokenRow = \Illuminate\Support\Facades\DB::table('password_reset_tokens')->where('email', $user->email)->first();
+        $this->assertNotNull($tokenRow);
+
+        // Reset password with token
+        $updateResp = $this->post('/reset-password', [
+            'token' => \Illuminate\Support\Facades\Password::createToken($user),
+            'email' => $user->email,
+            'password' => 'NewPassword123!',
+            'password_confirmation' => 'NewPassword123!',
+        ]);
+
+        $updateResp->assertRedirect(route('login'));
+        $updateResp->assertSessionHas('status');
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('NewPassword123!', $user->password_hash));
+    }
+
+    public function test_attachment_is_image_case_insensitive(): void
+    {
+        $imgUpper = new \App\Models\Attachment(['file_name' => 'EVIDENCE.PNG', 'file_type' => null]);
+        $this->assertTrue($imgUpper->isImage());
+
+        $imgLower = new \App\Models\Attachment(['file_name' => 'receipt.jpg', 'file_type' => 'application/octet-stream']);
+        $this->assertTrue($imgLower->isImage());
+
+        $docPdf = new \App\Models\Attachment(['file_name' => 'affidavit.pdf', 'file_type' => 'application/pdf']);
+        $this->assertFalse($docPdf->isImage());
+    }
 }
 

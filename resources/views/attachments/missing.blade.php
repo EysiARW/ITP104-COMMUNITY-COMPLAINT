@@ -61,9 +61,11 @@
 
     <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
         @if ($complaint)
-            <a href="{{ auth()->user()->isAdmin() ? route('admin.complaints.show', $complaint->reference_no) : route('complaints.show', $complaint->reference_no) }}" class="btn btn-primary">
+            <a href="{{ auth()->user()?->isAdmin() ? route('admin.complaints.show', $complaint->reference_no) : route('complaints.show', $complaint->reference_no) }}" class="btn btn-primary">
                 Return to Complaint ({{ $complaint->reference_no }})
             </a>
+        @elseif (isset($returnUrl))
+            <a href="{{ $returnUrl }}" class="btn btn-primary">{{ $returnText ?? 'Return' }}</a>
         @else
             <a href="{{ route('dashboard') }}" class="btn btn-primary">Return to Dashboard</a>
         @endif
