@@ -268,4 +268,21 @@ document.addEventListener('DOMContentLoaded', () => {
     ['dragleave', 'drop'].forEach((ev) => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.remove('drag'); }));
     zone.addEventListener('drop', (e) => add([...e.dataTransfer.files]));
   });
+
+  /* Prevent browser Back button on main dashboard from returning to login/guest pages */
+  const currentPath = window.location.pathname.replace(/\/+$/, '');
+  const isMainDashboard = currentPath === '/dashboard' || currentPath === '/admin/dashboard';
+  if (isMainDashboard && window.history && window.history.pushState) {
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', () => {
+      window.history.pushState(null, '', window.location.href);
+    });
+  }
+});
+
+/* Reload immediately when restored from browser bfcache (Back-Forward Cache) to revalidate session */
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    window.location.reload();
+  }
 });
