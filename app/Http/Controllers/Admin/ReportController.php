@@ -203,12 +203,14 @@ class ReportController extends Controller
 
         $complaints = $query->latest('complaint_id')->get();
 
-        Audit::log('PRINT', "Generated printable summary report for {$complaints->count()} complaints", 'complaints');
+        $actionType = $request->query('mode') === 'pdf' ? 'PDF export' : 'printable';
+        Audit::log('PRINT', "Generated {$actionType} summary report for {$complaints->count()} complaints", 'complaints');
 
         return view('admin.reports.print', [
             'complaints' => $complaints,
             'filters' => $request->all(),
             'generatedAt' => Carbon::now(),
+            'mode' => $request->query('mode'),
         ]);
     }
 }

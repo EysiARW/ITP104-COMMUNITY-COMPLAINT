@@ -226,6 +226,9 @@ class AdminModuleTest extends TestCase
         $response = $this->actingAs($this->admin)->get('/admin/reports');
         $response->assertStatus(200);
         $response->assertSee('Reports & Analytics');
+        $response->assertSee('Export PDF');
+        $response->assertSee('Print');
+        $response->assertSee('Export CSV');
 
         // CSV export
         $export = $this->actingAs($this->admin)->get('/admin/reports/export');
@@ -236,6 +239,17 @@ class AdminModuleTest extends TestCase
         $print = $this->actingAs($this->admin)->get('/admin/reports/print');
         $print->assertStatus(200);
         $print->assertSee('OFFICIAL INCIDENTS AND COMPLAINTS SUMMARY REPORT');
+
+        // PDF export view mode
+        $pdf = $this->actingAs($this->admin)->get('/admin/reports/print?mode=pdf');
+        $pdf->assertStatus(200);
+        $pdf->assertSee('.pdf', false);
+        $pdf->assertSee('Save as PDF');
+
+        // Autoprint mode
+        $autoprint = $this->actingAs($this->admin)->get('/admin/reports/print?autoprint=1');
+        $autoprint->assertStatus(200);
+        $autoprint->assertSee('window.print()', false);
     }
 
     public function test_admin_can_view_audit_logs(): void

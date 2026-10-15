@@ -3,11 +3,14 @@
 @section('heading', 'Reports & Analytics')
 @section('subtitle', 'Aggregate metrics, trends, and filtered complaint incident reports.')
 @section('actions')
-    <div style="display:flex; gap:8px;">
-        <a class="btn btn-outline" href="{{ route('admin.reports.print', request()->query()) }}" target="_blank">
-            <x-icon name="file-plus" /> Print / Export PDF
+    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <a class="btn btn-outline" href="{{ route('admin.reports.print', array_merge(request()->query(), ['mode' => 'pdf'])) }}" target="_blank" title="Export as PDF document">
+            <x-icon name="download" /> Export PDF
         </a>
-        <a class="btn btn-primary" href="{{ route('admin.reports.export', request()->query()) }}">
+        <a class="btn btn-outline" href="{{ route('admin.reports.print', array_merge(request()->query(), ['autoprint' => 1])) }}" target="_blank" title="Print official report">
+            <x-icon name="printer" /> Print
+        </a>
+        <a class="btn btn-primary" href="{{ route('admin.reports.export', request()->query()) }}" title="Download CSV spreadsheet">
             <x-icon name="upload" /> Export CSV
         </a>
     </div>

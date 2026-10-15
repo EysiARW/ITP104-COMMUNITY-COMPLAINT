@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Barangay Banlic CCIRS - Incident & Complaint Report</title>
+    <title>{{ request('mode') === 'pdf' ? 'Barangay_Banlic_CCIRS_Report_' . now()->format('Y-m-d') . '.pdf' : 'Barangay Banlic CCIRS - Incident & Complaint Report' }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,7 +77,7 @@
         }
         .no-print {
             margin-bottom: 20px;
-            padding: 12px;
+            padding: 12px 16px;
             background: #eef2ff;
             border: 1px solid #c7d2fe;
             border-radius: 6px;
@@ -85,7 +85,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .btn {
             background: #141f5e;
@@ -94,8 +94,23 @@
             text-decoration: none;
             border-radius: 4px;
             font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
             border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover {
+            background: #1e296e;
+        }
+        .btn-secondary-print {
+            background: #fff;
+            color: #141f5e;
+            border: 1px solid #c7d2fe;
+        }
+        .btn-secondary-print:hover {
+            background: #e0e7ff;
         }
         @media print {
             .no-print {
@@ -103,14 +118,30 @@
             }
             body {
                 padding: 0;
+                background: #fff;
+            }
+            @page {
+                size: portrait;
+                margin: 12mm 10mm;
             }
         }
     </style>
 </head>
 <body>
     <div class="no-print">
-        <div><strong>Print Preview:</strong> You can print this page or save as PDF via your browser's print dialog (Ctrl+P / Cmd+P).</div>
-        <button class="btn" onclick="window.print()">Print / Save PDF</button>
+        <div style="display:flex; align-items:center; gap:8px;">
+            @if (request('mode') === 'pdf')
+                <div><strong>PDF Export:</strong> In the browser prompt, select <strong>"Save as PDF"</strong> as the destination to download your report.</div>
+            @else
+                <div><strong>Print Preview:</strong> You can send this official report directly to your printer or save it as a PDF.</div>
+            @endif
+        </div>
+        <div style="display:flex; gap:8px;">
+            <button class="btn" type="button" onclick="window.print()">
+                {{ request('mode') === 'pdf' ? 'Save as PDF' : 'Print Now' }}
+            </button>
+            <button class="btn btn-secondary-print" type="button" onclick="window.close()">Close</button>
+        </div>
     </div>
 
     <div class="header" style="display: flex; align-items: center; justify-content: center; gap: 20px; text-align: center; border-bottom: 2px solid #141f5e; padding-bottom: 16px; margin-bottom: 20px;">
@@ -184,5 +215,15 @@
             <div style="font-size:11px; color:#555;">Punong Barangay / Secretary</div>
         </div>
     </div>
+
+    @if (request('autoprint') || request('mode') === 'pdf')
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                window.print();
+            }, 350);
+        });
+    </script>
+    @endif
 </body>
 </html>
