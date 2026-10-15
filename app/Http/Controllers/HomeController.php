@@ -9,6 +9,10 @@ class HomeController extends Controller
 {
     public function index()
     {
+        if (auth()->check()) {
+            return redirect()->route(auth()->user()->isAdmin() ? 'admin.dashboard' : 'dashboard');
+        }
+
         $total = Complaint::count();
         $stats = [
             'submitted' => $total,

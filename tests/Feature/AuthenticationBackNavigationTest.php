@@ -58,6 +58,7 @@ class AuthenticationBackNavigationTest extends TestCase
     {
         $admin = User::where('role_id', User::ROLE_ADMIN)->first();
 
+        $this->actingAs($admin)->get('/')->assertRedirect(route('admin.dashboard'));
         $this->actingAs($admin)->get('/login')->assertRedirect(route('admin.dashboard'));
         $this->actingAs($admin)->get('/register')->assertRedirect(route('admin.dashboard'));
         $this->actingAs($admin)->get('/forgot-password')->assertRedirect(route('admin.dashboard'));
@@ -67,6 +68,7 @@ class AuthenticationBackNavigationTest extends TestCase
     {
         $resident = $this->createResident();
 
+        $this->actingAs($resident)->get('/')->assertRedirect(route('dashboard'));
         $this->actingAs($resident)->get('/login')->assertRedirect(route('dashboard'));
         $this->actingAs($resident)->get('/register')->assertRedirect(route('dashboard'));
         $this->actingAs($resident)->get('/forgot-password')->assertRedirect(route('dashboard'));
