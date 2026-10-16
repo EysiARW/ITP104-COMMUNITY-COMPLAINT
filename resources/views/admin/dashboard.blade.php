@@ -3,8 +3,8 @@
 @section('heading', 'Barangay Admin Dashboard')
 @section('subtitle', 'Welcome back, ' . auth()->user()->first_name . '. Here is the community incident reporting workspace.')
 @section('actions')
-    <div style="display:flex; gap:8px;">
-        <a class="btn btn-outline" href="{{ route('admin.complaints.index', ['assigned' => 'unassigned']) }}">
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a class="btn btn-outline" href="{{ route('admin.complaints.index', ['assigned' => 'unassigned', 'tab' => 'unassigned']) }}">
             <x-icon name="list" /> View Unassigned ({{ $unassignedCount }})
         </a>
         <a class="btn btn-primary" href="{{ route('admin.complaints.index') }}">
@@ -25,7 +25,7 @@
         <span>
             Pending Review
             @if ($pending > 0)
-                &bull; <a href="{{ route('admin.complaints.index', ['status_id' => 1]) }}">Review</a>
+                &bull; <a href="{{ route('admin.complaints.index', ['status_id' => 1, 'tab' => 'needs_review']) }}">Review</a>
             @endif
         </span>
     </div>

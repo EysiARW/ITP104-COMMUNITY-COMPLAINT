@@ -25,7 +25,7 @@
     @else
         <div class="table-wrap">
             <table>
-                <thead><tr><th>Reference</th><th>Title</th><th>Category</th><th>Status</th><th>Filed</th><th></th></tr></thead>
+                <thead><tr><th>Reference</th><th>Title</th><th>Category</th><th>Status</th><th>Filed</th><th class="col-action"></th></tr></thead>
                 <tbody>
                 @foreach ($complaints as $c)
                     <tr>
@@ -34,7 +34,7 @@
                         <td>{{ $c->category ? $c->category->category_name : '—' }}</td>
                         <td><x-status-badge :status="$c->status" /></td>
                         <td>{{ $c->created_at->format('M d, Y') }}</td>
-                        <td><a class="btn btn-outline btn-sm" href="{{ route('complaints.show', $c) }}">View</a></td>
+                        <td class="col-action"><a class="btn btn-outline btn-sm" href="{{ route('complaints.show', $c) }}">View</a></td>
                     </tr>
                 @endforeach
                 </tbody>

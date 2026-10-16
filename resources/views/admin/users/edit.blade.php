@@ -53,13 +53,16 @@
         <div class="grid-2">
             <div class="field">
                 <label for="contact_number">Mobile Number</label>
-                <input type="text" name="contact_number" id="contact_number" value="{{ old('contact_number', $user->contact_number) }}" placeholder="09171234567">
+                <input type="tel" name="contact_number" id="contact_number" value="{{ old('contact_number', $user->contact_number) }}" placeholder="09171234567">
                 @error('contact_number')<span class="field-error">{{ $message }}</span>@enderror
             </div>
 
             <div class="field">
                 <label for="password">Change Password (leave blank to keep current)</label>
-                <input type="password" name="password" id="password" minlength="8" placeholder="Enter new password if updating">
+                <div class="pw">
+                    <input type="password" name="password" id="password" minlength="8" placeholder="Enter new password if updating">
+                    <button type="button" data-toggle-password>Show</button>
+                </div>
                 @error('password')<span class="field-error">{{ $message }}</span>@enderror
             </div>
         </div>

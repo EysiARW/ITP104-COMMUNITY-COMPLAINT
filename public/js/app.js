@@ -51,6 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) {
+      sidebar?.classList.remove('open');
+      scrim?.classList.remove('show');
+    } else {
+      sidebar?.classList.remove('is-hovered');
+    }
+  });
+
   /* Theme Toggle (Dark / Light mode) */
   const updateChartThemes = (isDark) => {
     if (window.Chart) {
@@ -63,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (chart.options.scales?.y?.ticks) chart.options.scales.y.ticks.color = isDark ? '#95a0c6' : '#6b7394';
             if (chart.options.scales?.x?.grid) chart.options.scales.x.grid.color = isDark ? '#222b4c' : '#e3e7f3';
             if (chart.options.scales?.y?.grid) chart.options.scales.y.grid.color = isDark ? '#222b4c' : '#e3e7f3';
+            if (chart.options.plugins?.legend?.labels) chart.options.plugins.legend.labels.color = isDark ? '#e4e9f7' : '#1c2340';
             chart.update();
           }
         });
@@ -81,7 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sync initial labels and charts
   const initialIsDark = document.documentElement.classList.contains('dark');
   $$('.theme-label-mode').forEach((el) => el.textContent = initialIsDark ? 'Dark' : 'Light');
-  if (initialIsDark) updateChartThemes(true);
+  if (initialIsDark) {
+    updateChartThemes(true);
+    window.addEventListener('load', () => updateChartThemes(document.documentElement.classList.contains('dark')));
+  }
 
   $$('[data-theme-toggle]').forEach((btn) => {
     btn.addEventListener('click', (e) => {

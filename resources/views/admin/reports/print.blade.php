@@ -112,6 +112,13 @@
         .btn-secondary-print:hover {
             background: #e0e7ff;
         }
+        @media screen and (max-width: 640px) {
+            body { padding: 12px; }
+            .header { flex-wrap: wrap; gap: 10px !important; }
+            .header img:last-child { display: none; }
+            .header h1 { font-size: 18px !important; }
+            .footer { flex-direction: column; align-items: center; gap: 24px; }
+        }
         @media print {
             .no-print {
                 display: none !important;

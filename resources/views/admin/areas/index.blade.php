@@ -4,12 +4,12 @@
 @section('subtitle', 'Manage barangay offices, committees, and jurisdiction puroks/areas.')
 
 @section('content')
-<div class="grid-2">
+<div class="grid-2 stack-lg">
     <!-- DEPARTMENTS SECTION -->
     <div>
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h3>Barangay Departments & Committees</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:16px;">
+                <h3 style="margin:0;">Barangay Departments &amp; Committees</h3>
                 <button class="btn btn-primary btn-sm" onclick="document.getElementById('add-dept-modal').classList.add('show')">
                     + Add Department
                 </button>
@@ -81,8 +81,8 @@
     <!-- AREAS / PUROKS SECTION -->
     <div>
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h3>Jurisdiction Areas & Puroks</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:16px;">
+                <h3 style="margin:0;">Jurisdiction Areas &amp; Puroks</h3>
                 <button class="btn btn-primary btn-sm" onclick="document.getElementById('add-area-modal').classList.add('show')">
                     + Add Area
                 </button>

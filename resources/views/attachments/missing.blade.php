@@ -17,32 +17,32 @@
         </div>
     </div>
 
-    <div style="background: var(--bg-surface, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px;">
-        <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--muted, #64748b); letter-spacing: 0.05em; margin-bottom: 10px;">
+    <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px;">
+        <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 10px;">
             Attachment Metadata
         </div>
         <table style="width: 100%; border-collapse: collapse; font-size: 13.5px;">
             <tr>
-                <td style="padding: 4px 0; color: var(--muted, #64748b); width: 140px;">File Name</td>
-                <td style="padding: 4px 0; font-weight: 500;"><strong>{{ $attachment->file_name }}</strong></td>
+                <td style="padding: 4px 0; color: var(--muted); width: 140px;">File Name</td>
+                <td style="padding: 4px 0; font-weight: 500; overflow-wrap: anywhere;"><strong>{{ $attachment->file_name }}</strong></td>
             </tr>
             <tr>
-                <td style="padding: 4px 0; color: var(--muted, #64748b);">File Type</td>
+                <td style="padding: 4px 0; color: var(--muted);">File Type</td>
                 <td style="padding: 4px 0;">{{ $attachment->file_type ?? 'Unknown' }}</td>
             </tr>
             <tr>
-                <td style="padding: 4px 0; color: var(--muted, #64748b);">File Size</td>
+                <td style="padding: 4px 0; color: var(--muted);">File Size</td>
                 <td style="padding: 4px 0;">{{ $attachment->formatted_size }}</td>
             </tr>
             @if ($complaint)
             <tr>
-                <td style="padding: 4px 0; color: var(--muted, #64748b);">Complaint Ref</td>
+                <td style="padding: 4px 0; color: var(--muted);">Complaint Ref</td>
                 <td style="padding: 4px 0;"><span class="badge">{{ $complaint->reference_no }}</span></td>
             </tr>
             @endif
             @if ($attachment->uploaded_at)
             <tr>
-                <td style="padding: 4px 0; color: var(--muted, #64748b);">Uploaded At</td>
+                <td style="padding: 4px 0; color: var(--muted);">Uploaded At</td>
                 <td style="padding: 4px 0;">{{ $attachment->uploaded_at->format('M j, Y g:i A') }}</td>
             </tr>
             @endif
@@ -51,10 +51,10 @@
 
     <div style="background: rgba(59, 130, 246, 0.08); border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 4px; margin-bottom: 24px; font-size: 13.5px; line-height: 1.55;">
         <strong>Why did this happen?</strong>
-        <p style="margin: 6px 0 0 0; color: var(--text-dark, #334155);">
+        <p style="margin: 6px 0 0 0; color: var(--ink);">
             Cloud container platforms like Railway use ephemeral disks by default. When the application service restarts or redeploys after a git commit, files saved inside the container are reset unless a persistent storage volume is attached.
         </p>
-        <p style="margin: 8px 0 0 0; color: var(--text-dark, #334155);">
+        <p style="margin: 8px 0 0 0; color: var(--ink);">
             <strong>To retain future uploads permanently:</strong> In your Railway project dashboard, select your Laravel web service &rarr; <strong>Volumes</strong> &rarr; <strong>Add Volume</strong> with mount path <code>/app/storage/app</code>.
         </p>
     </div>

@@ -7,7 +7,7 @@
         ['All Complaints', 'list', 'admin.complaints.index', 'admin.complaints.*'],
         ['My Investigations', 'search', 'admin.investigations.index', 'admin.investigations.*'],
         ['Manage Users', 'users', 'admin.users.index', 'admin.users.*'],
-        ['Departments & Areas', 'map-pin', 'admin.areas.index', 'admin.areas.*'],
+        ['Departments & Areas', 'map-pin', 'admin.areas.index', 'admin.areas.*|admin.departments.*'],
         ['Complaint Categories', 'tag', 'admin.categories.index', 'admin.categories.*'],
         ['Reports', 'bar-chart', 'admin.reports.index', 'admin.reports.*'],
         ['Audit Logs', 'shield', 'admin.logs.index', 'admin.logs.*'],
@@ -22,7 +22,7 @@
 @endphp
 <aside class="sidebar" id="sidebar" aria-label="Main navigation">
     <div class="side-head">
-        <a class="side-brand" href="{{ route('dashboard') }}" title="Brgy. Banlic CCIRS">
+        <a class="side-brand" href="{{ $user->isAdmin() ? route('admin.dashboard') : route('dashboard') }}" title="Brgy. Banlic CCIRS">
             <img src="{{ asset('images/logo.png') }}" alt="Logo">
             <span class="brand-text"><b>Brgy. Banlic</b><small>Complaint &amp; Incident Reports</small></span>
         </a>

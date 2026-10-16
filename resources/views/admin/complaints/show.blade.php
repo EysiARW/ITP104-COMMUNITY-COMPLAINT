@@ -26,7 +26,7 @@
             <p style="white-space: pre-line; line-height: 1.6;">{{ $complaint->description }}</p>
 
             <dl class="kv" style="margin-top: 20px;">
-                <dt>Report Type</dt><dd>{{ $complaint->reportType->type_name }}</dd>
+                <dt>Report Type</dt><dd>{{ $complaint->reportType ? $complaint->reportType->type_name : '—' }}</dd>
                 <dt>Category</dt><dd>{{ $complaint->category ? $complaint->category->category_name : '—' }}</dd>
                 <dt>Purok / Area</dt><dd>{{ $complaint->area ? $complaint->area->area_name : '—' }}</dd>
                 @if ($complaint->location_details)
@@ -71,7 +71,7 @@
                             @if ($a->isImage())
                                 <img src="{{ route('attachments.show', $a->attachment_id) }}" alt="" loading="lazy">
                             @else
-                                <div class="ph">FILE</div>
+                                <div class="ph">{{ strtoupper(pathinfo($a->file_name, PATHINFO_EXTENSION) ?: 'FILE') }}</div>
                             @endif
                             <span>{{ $a->file_name }}</span>
                         </a>
@@ -86,7 +86,7 @@
                 <h3 style="color: var(--ok);">Case Resolution</h3>
                 <p style="white-space: pre-line;">{{ $complaint->resolution->resolution_details }}</p>
                 <p class="muted" style="font-size: 13px; margin: 0;">
-                    Resolved on {{ $complaint->resolution->resolved_at->format('F j, Y g:i A') }}
+                    Resolved on {{ $complaint->resolution->resolved_at ? $complaint->resolution->resolved_at->format('F j, Y g:i A') : '—' }}
                     @if ($complaint->resolution->resolver)
                         by {{ $complaint->resolution->resolver->full_name }}
                     @endif
@@ -103,7 +103,7 @@
             @if ($complaint->currentAssignment)
                 <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;">
                     <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 700;">Currently Assigned To</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 2px;">
+                    <div style="font-size: 16px; font-weight: 700; color: var(--ink); margin-top: 2px;">
                         {{ $complaint->currentAssignment->assignee ? $complaint->currentAssignment->assignee->full_name : 'Assigned Staff' }}
                     </div>
                     @if ($complaint->currentAssignment->assignee && $complaint->currentAssignment->assignee->committee_position)

@@ -6,6 +6,7 @@
     <div class="glass auth-card">
         <h2>Set a new password</h2>
         <p class="lead">Choose a strong password you haven't used before.</p>
+        @include('partials.alerts')
 
         <form method="POST" action="{{ route('password.update') }}">
             @csrf

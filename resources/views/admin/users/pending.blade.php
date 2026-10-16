@@ -127,11 +127,11 @@
             <!-- Rendered image or iframe injected via JS -->
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line);">
             <a id="doc-modal-external" href="#" target="_blank" class="btn btn-outline btn-sm">
                 Open in New Tab &nearr;
             </a>
-            <button type="button" class="btn btn-light" onclick="closeDocPreviewModal()">
+            <button type="button" class="btn btn-primary btn-sm" onclick="closeDocPreviewModal()">
                 Close Preview
             </button>
         </div>

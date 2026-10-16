@@ -33,7 +33,7 @@
                     @foreach ($complaint->attachments as $a)
                         <a class="attach" href="{{ route('attachments.show', $a->attachment_id) }}" target="_blank" rel="noopener">
                             @if ($a->isImage())<img src="{{ route('attachments.show', $a->attachment_id) }}" alt="" loading="lazy">
-                            @else<div class="ph">PDF</div>@endif
+                            @else<div class="ph">{{ strtoupper(pathinfo($a->file_name, PATHINFO_EXTENSION) ?: 'FILE') }}</div>@endif
                             <span>{{ $a->file_name }}</span>
                         </a>
                     @endforeach
@@ -42,8 +42,8 @@
         @endif
 
         @if ($complaint->resolution)
-            <div class="card" style="border-color:#b7e4c4">
-                <h3>Resolution</h3>
+            <div class="card" style="border-left: 4px solid var(--ok);">
+                <h3 style="color: var(--ok);">Resolution</h3>
                 <p style="white-space:pre-line">{{ $complaint->resolution->resolution_details }}</p>
                 <p class="muted" style="font-size:13.5px;margin:0">Resolved on {{ $complaint->resolution->resolved_at ? $complaint->resolution->resolved_at->format('F j, Y') : '—' }}</p>
             </div>

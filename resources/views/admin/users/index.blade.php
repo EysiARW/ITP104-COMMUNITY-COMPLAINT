@@ -3,7 +3,7 @@
 @section('heading', 'Manage Users')
 @section('subtitle', 'View, add, edit, and manage accounts and role assignments.')
 @section('actions')
-    <div style="display: flex; gap: 8px;">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <a class="btn btn-outline" href="{{ route('admin.users.pending') }}" style="position: relative;">
             <x-icon name="shield" /> Pending Approvals
             @if ($pendingCount > 0)

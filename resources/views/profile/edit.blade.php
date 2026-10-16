@@ -16,6 +16,7 @@
         <div class="field">
             <label for="middle_name">Middle name</label>
             <input id="middle_name" type="text" name="middle_name" value="{{ old('middle_name', $user->middle_name) }}">
+            @error('middle_name')<span class="field-error">{{ $message }}</span>@enderror
         </div>
         <div class="field">
             <label for="last_name">Last name <span class="req">*</span></label>
@@ -42,10 +43,12 @@
                     <option value="{{ $a->area_id }}" @selected(old('area_id', $user->area_id) == $a->area_id)>{{ $a->area_name }}</option>
                 @endforeach
             </select>
+            @error('area_id')<span class="field-error">{{ $message }}</span>@enderror
         </div>
         <div class="field">
             <label for="address">Street / House no.</label>
             <input id="address" type="text" name="address" value="{{ old('address', $user->address) }}">
+            @error('address')<span class="field-error">{{ $message }}</span>@enderror
         </div>
     </div>
     <p class="muted" style="font-size:13.5px">Account type: <b>{{ ucfirst($user->role->role_name ?? 'Resident') }}</b> &middot; Member since {{ $user->created_at ? $user->created_at->format('F Y') : now()->format('F Y') }}</p>
@@ -58,17 +61,26 @@
     <div class="grid-3">
         <div class="field">
             <label for="current_password">Current password <span class="req">*</span></label>
-            <input id="current_password" type="password" name="current_password" required autocomplete="current-password">
+            <div class="pw">
+                <input id="current_password" type="password" name="current_password" required autocomplete="current-password">
+                <button type="button" data-toggle-password>Show</button>
+            </div>
             @if ($errors->password->has('current_password'))<span class="field-error">{{ $errors->password->first('current_password') }}</span>@endif
         </div>
         <div class="field">
             <label for="new_password">New password <span class="req">*</span></label>
-            <input id="new_password" type="password" name="password" required minlength="8" autocomplete="new-password">
+            <div class="pw">
+                <input id="new_password" type="password" name="password" required minlength="8" autocomplete="new-password">
+                <button type="button" data-toggle-password>Show</button>
+            </div>
             @if ($errors->password->has('password'))<span class="field-error">{{ $errors->password->first('password') }}</span>@endif
         </div>
         <div class="field">
             <label for="new_password_confirmation">Confirm new password <span class="req">*</span></label>
-            <input id="new_password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
+            <div class="pw">
+                <input id="new_password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password">
+                <button type="button" data-toggle-password>Show</button>
+            </div>
         </div>
     </div>
     <div class="form-actions">

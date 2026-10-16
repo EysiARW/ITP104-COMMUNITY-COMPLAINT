@@ -6,6 +6,7 @@
     <div class="glass auth-card wide">
         <h2>Create your account</h2>
         <p class="lead">Registered residents can file reports and track them online.</p>
+        @include('partials.alerts')
 
         <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
             @csrf
@@ -91,7 +92,7 @@
 
                     <div class="field">
                         <label for="verification_doc">Upload Document or Take Photo <span class="req">*</span></label>
-                        <input id="verification_doc" type="file" name="verification_doc" accept=".jpg,.jpeg,.png,.pdf,image/*" capture="environment" required style="padding: 8px;">
+                        <input id="verification_doc" type="file" name="verification_doc" accept=".jpg,.jpeg,.png,.pdf,image/*" capture="environment" required>
                         <div class="hint">Accepted: JPG, PNG, PDF (Max 5MB). Mobile devices can snap photo directly.</div>
                         @error('verification_doc')<span class="field-error">{{ $message }}</span>@enderror
                     </div>
