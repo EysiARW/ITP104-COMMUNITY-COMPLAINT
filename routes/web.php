@@ -33,8 +33,9 @@ Route::get('/report', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
+    $loginThrottle = app()->isProduction() ? 'throttle:6,1' : 'throttle:60,1';
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
+    Route::post('/login', [AuthController::class, 'login'])->middleware($loginThrottle);
 
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);

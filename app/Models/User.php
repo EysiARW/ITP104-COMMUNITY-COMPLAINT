@@ -61,7 +61,7 @@ class User extends Authenticatable
     {
         $first = (string) $this->first_name;
         $last = (string) $this->last_name;
-        $in = strtoupper(mb_substr($first, 0, 1) . mb_substr($last, 0, 1));
+        $in = mb_strtoupper(mb_substr($first, 0, 1) . mb_substr($last, 0, 1), 'UTF-8');
         return $in !== '' ? $in : 'U';
     }
 
